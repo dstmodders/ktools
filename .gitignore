@@ -1,15 +1,19 @@
+### Intellij ###
+.idea/
+
+### Project ###
+**/Makefile
+*.cmake
+*.txt
 build/**
 deps/**
 local/**
-**/Makefile
-*.txt
-*.cmake
 
-*.o
-*.so
 *.a
 *.dll
 *.exe
+*.o
+*.so
 
 *.tar.gz
 *.zip
