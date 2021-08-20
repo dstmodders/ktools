@@ -1,3 +1,10 @@
+> Since I do sometimes develop mods for this game, I'm still dependent on this
+> project. However, it does seem to be abandoned (the last commit was in 2016).
+> So here we are...
+>
+> As for 20.08.2021, I'm planning to add [ImageMagick][] 7 support and binaries
+> on the [Releases][]' page.
+
 # ktools
 
 A set of cross-platform modding tools for the game [Don't Starve][], by
@@ -9,6 +16,7 @@ and the space following it should not be typed.
 
 - [ktech](#ktech)
 - [krane](#krane)
+- [Docker](#docker)
 - [INSTALLATION FROM SOURCE](#installation-from-source)
 
 ## ktech
@@ -212,6 +220,20 @@ build atlases is automatically determined from the build file, so they need
 not be given as arguments.
 ```
 
+## Docker
+
+If you are familiar with [Docker][] you can use the corresponding [Docker Hub][]
+images: https://hub.docker.com/r/viktorpopkov/ktools
+
+```shell
+$ cd <your data directory>
+$ docker pull viktorpopkov/ktools
+$ docker run --rm -v "$(pwd):/data/" viktorpopkov/ktools ktech --version
+```
+
+To learn more, consider checking out the
+following [Usage](https://github.com/victorpopkov/docker-ktools#usage) section.
+
 ## INSTALLATION FROM SOURCE
 
 First, install [CMake][], [ImageMagick][] and a native building solution (such
@@ -269,10 +291,13 @@ select "Release" as the active solution configuration. Then build the solution
 See `NOTICE.txt`.
 
 [cmake]: https://cmake.org/
+[docker hub]: https://hub.docker.com/
+[docker]: https://www.docker.com/
 [don't starve]: https://www.klei.com/games/dont-starve
 [imagemagick]: https://imagemagick.org/index.php
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
 [libzip]: https://libzip.org/
+[releases]: https://github.com/victorpopkov/ktools/releases
 [spriter]: https://brashmonkey.com/spriter-pro/
 [zlib]: https://zlib.net/
