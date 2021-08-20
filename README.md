@@ -3,14 +3,14 @@
 A set of cross-platform modding tools for the game [Don't Starve](http://www.dontstarvegame.com/), by [Klei Entertainment](http://kleientertainment.com/).
 
 
-**IMPORTANT**: In what follows, a code block starting with a '$' indicates something that should be typed in a terminal (cmd.exe, for Windows). The '$' and the space following it should not be typed.
+**IMPORTANT**: In what follows, a code block starting with a `$` indicates something that should be typed in a terminal (cmd.exe, for Windows). The `$` and the space following it should not be typed.
 
 
 ## ktech
 A bidirectional cross-platform converter between Klei Entertainment's TEX texture format and PNG.
 
 ### Basic usage and examples
-ktech converts bidirectionally between Klei's TEX format (KTEX) and PNG. If the first argument given to ktech is a KTEX file, it will be converted to PNG, and conversely if the first argument is a PNG file it will be converted to KTEX. If the second argument it missing, it is taken to be the first argument with the extension replaced (but in the current directory). If the second argument is a directory, the same is done as in the missing argument case, but the resulting file is placed in this directory.
+ktech converts bidirectionally between Klei's TEX format (KTEX) and PNG. If the first argument given to ktech is a KTEX file, it will be converted to PNG, and conversely, if the first argument is a PNG file it will be converted to KTEX. If the second argument is missing, it is taken to be the first argument with the extension replaced (but in the current directory). If the second argument is a directory, the same is done as in the missing argument case, but the resulting file is placed in this directory.
 
 To convert `atlas-0.tex` to `atlas-0.png`:
 ```
@@ -22,7 +22,7 @@ $ ktech atlas-0.tex some_folder
 ```
 To convert some/path/to/a.png to mymod/modicon.tex:
 ```
-$ ktech some/path/to/a.ong mymod/modicon.tex
+$ ktech some/path/to/a.png mymod/modicon.tex
 ```
 
 ### Full usage
@@ -172,12 +172,12 @@ First, install [CMake](http://www.cmake.org), [ImageMagick](http://www.imagemagi
 
 The library libzip is an optional dependency. If it is present and found at compilation time, zip archives are treated in the same manner as directories when given as input.
 
-### Linux anc Mac
+### Linux and Mac
 Enter ktools' directory with a terminal and type
 ```
 $ ./configure && make
 ```
-provided there are no errors, ktech and krane should be placed in ktools' directory. The `./configure` step may be replaced by running CMake directly (either via its command-line tool, `cmake`, or its GUI tool, `ccmake`), where customization options are available. Finally, as an optional last step, in order to perform a system wide installation of the ktools type
+provided there are no errors, ktech and krane should be placed in ktools' directory. The `./configure` step may be replaced by running CMake directly (either via its command-line tool, `cmake`, or its GUI tool, `ccmake`), where customization options are available. Finally, as an optional last step, in order to perform a system-wide installation of the ktools type
 ```
 $ sudo make install
 ```
@@ -185,11 +185,11 @@ $ sudo make install
 ### Windows
 *Note for MinGW users*: ImageMagick 6.8.9 was reported to not compile under MinGW. Version 6.8.8-10 was confirmed to work. You may also need to install (and likely compile) libpng and zlib.
 
-Open CMake, select the ktools directory as the source folder ("Where is the source code") and whichever directory you'd like as the build folder ("Where to build the binaries"). Click "Configure" and select a generator (typically either a version of Visual Studio of "MinGW Makefiles"). Leave "Use default native compilers" checked and click "Finish". If you with to customize some compilation option (which shouldn't be necessary) do so now, in the options presented in red after the configure step finishes. If any option was changed, click "Configure" again. Finally, click "Generate", which should place the project files in the build directory you selected.
+Open CMake, select the ktools directory as the source folder ("Where is the source code") and whichever directory you'd like as the build folder ("Where to build the binaries"). Click "Configure" and select a generator (typically either a version of Visual Studio or "MinGW Makefiles"). Leave "Use default native compilers" checked and click "Finish". If you wish to customize some compilation option (which shouldn't be necessary) do so now, in the options presented in red after the configure step finishes. If any option was changed, click "Configure" again. Finally, click "Generate", which should place the project files in the build directory you selected.
 
 For MinGW, proceed as in the Linux/Mac case (i.e., simply run `make` in the build directory).
 
-For Visual Studio, open the ALL_BUILD.vcxproj file, right click the 'ktools' solution on the left pane, click on "Configuration Manager..." and make sure to select "Release" as the active solution configuration. Then build the solution (which may be done by pressing "F7").
+For Visual Studio, open the ALL_BUILD.vcxproj file, right-click the 'ktools' solution on the left pane, click on "Configuration Manager..." and make sure to select "Release" as the active solution configuration. Then build the solution (which may be done by pressing "F7").
 
 
 
