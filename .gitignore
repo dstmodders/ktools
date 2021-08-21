@@ -1,10 +1,9 @@
-### Intellij ###
+### CLion ###
 .idea/
+cmake-build-*/
 
 ### Project ###
 **/Makefile
-*.cmake
-*.txt
 build/**
 deps/**
 local/**
