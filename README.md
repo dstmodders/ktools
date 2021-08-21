@@ -10,6 +10,8 @@
 
 # ktools
 
+[![GitHub Workflow CI Status][]](https://github.com/victorpopkov/ktools/actions?query=workflow%3ACI)
+
 A set of cross-platform modding tools for the game [Don't Starve][], by
 [Klei Entertainment][].
 
@@ -297,6 +299,7 @@ See `NOTICE.txt`.
 [docker hub]: https://hub.docker.com/
 [docker]: https://www.docker.com/
 [don't starve]: https://www.klei.com/games/dont-starve
+[github workflow ci status]: https://img.shields.io/github/workflow/status/victorpopkov/ktools/CI?label=CI
 [imagemagick]: https://imagemagick.org/index.php
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
