@@ -2,8 +2,11 @@
 > project. However, it does seem to be abandoned (the last commit was in 2016).
 > So here we are...
 >
-> As for 20.08.2021, I'm planning to add [ImageMagick][] 7 support and binaries
-> on the [Releases][]' page.
+> As for 21.08.2021, in the next couple of days, I'm planning to:
+>
+> - Release `v4.4.1` with [#13](https://github.com/nsimplex/ktools/pull/13) fix
+> - Release `v4.5.0` with [ImageMagick][] version 7 support
+> - Release and update the corresponding [Docker][] images
 
 # ktools
 
