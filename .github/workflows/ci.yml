@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        container: [debian:bullseye]
+        container: ['debian:bullseye']
     steps:
       - name: Check out
         uses: actions/checkout@v2
