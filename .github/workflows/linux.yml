@@ -28,7 +28,6 @@ jobs:
             build-essential \
             ca-certificates \
             cmake \
-            git \
             libpng-dev \
             libreadline-dev \
             libzip-dev \
@@ -45,7 +44,7 @@ jobs:
           make install
           ldconfig /usr/local/lib/
         env:
-          IMAGEMAGICK_VERSION: 6.9.11-3
+          IMAGEMAGICK_VERSION: 6.9.12-19
       - name: Build and install ktools
         run: |
           cmake \
