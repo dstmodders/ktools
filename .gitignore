@@ -3,6 +3,11 @@
 cmake-build-*/
 
 ### Project ###
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+cmake_uninstall.cmake
+
 **/Makefile
 build/**
 deps/**
