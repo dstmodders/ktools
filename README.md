@@ -10,7 +10,8 @@
 
 # ktools
 
-[![GitHub Workflow CI Status][]](https://github.com/victorpopkov/ktools/actions?query=workflow%3ACI)
+[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=Linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
+[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macOS)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
 
 A set of cross-platform modding tools for the game [Don't Starve][], by
 [Klei Entertainment][].
@@ -23,13 +24,16 @@ and the space following it should not be typed.
 - [krane](#krane)
 - [Docker](#docker)
 - [INSTALLATION FROM SOURCE](#installation-from-source)
+  - [Linux](#linux)
+  - [macOS](#macos)
+  - [Windows](#windows)
 
 ## ktech
 
 A bidirectional cross-platform converter between [Klei Entertainment][]'s TEX
 texture format and PNG.
 
-### Basic Usage and Examples
+### Basic Usage & Examples
 
 `ktech` converts bidirectionally between Klei's TEX format (KTEX) and PNG. If
 the first argument given to `ktech` is a KTEX file, it will be converted to PNG,
@@ -136,7 +140,7 @@ A cross-platform decompiler for [Klei Entertainment][]'s animation format.
 
 `krane`'s output is a [Spriter][] project.
 
-### Basic Usage and Examples
+### Basic Usage & Examples
 
 `krane`'s primary usage is converting an animation file (`anim.bin`) and a build
 file (`build.bin`) as found within the ZIPs of [Don't Starve][]'s `anim/`
@@ -241,29 +245,82 @@ following [Usage](https://github.com/victorpopkov/docker-ktools#usage) section.
 
 ## INSTALLATION FROM SOURCE
 
-First, install [CMake][], [ImageMagick][] and a native building solution (such
-as Visual Studio for Windows, XCode for macOS and gcc/GNU Make for Linux; in the
-Linux case, you probably have them already).
-
 The library [libzip][] is an optional dependency. If it is present and found at
 compilation time, zip archives are treated in the same manner as directories
 when given as input.
 
-### Linux and macOS
+### Linux
 
-Enter `ktools`' directory with a terminal and type:
+Example for the fresh instance of the latest Debian "bullseye" release.
+
+#### 1. Install dependencies
 
 ```shell
-$ ./configure && make
+$ sudo apt-get update
+$ sudo apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    cmake \
+    libpng-dev \
+    libreadline-dev \
+    libzip-dev \
+    nodejs \
+    pkg-config \
+    wget
 ```
 
-Provided there are no errors, `ktech` and `krane` should be placed in `ktools`'
-directory. The `./configure` step may be replaced by running [CMake][] directly
-(either via its command-line tool, `cmake`, or its GUI tool, `ccmake`), where
-customization options are available. Finally, as an optional last step, in order
-to perform a system-wide installation of the `ktools` type:
+#### 2. Build & install [ImageMagick][]
 
 ```shell
+$ export IMAGEMAGICK_VERSION='6.9.12-19'
+$ wget -P /tmp/ "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+$ tar xf "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz" -C /tmp/
+$ cd /tmp/ImageMagick-${IMAGEMAGICK_VERSION}/
+$ ./configure && make
+$ make install
+$ ldconfig /usr/local/lib/
+```
+
+#### 3. Build & install `ktools`
+
+```shell
+$ cd /path/to/ktools
+$ cmake \
+    -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-co--variable=libname Magick++).so" \
+    -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
+    -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-co--variable=libname MagickCore).so" \
+    -DImageMagick_MagickWand_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickWand | tail -c+3)" \
+    -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-co--variable=libname MagickWand).so" \
+  .
+$ ./configure && make
+$ sudo make install
+```
+
+### macOS
+
+#### 1. Install [ImageMagick][]
+
+If you have [Homebrew][] installed:
+
+```shell
+$ brew install imagemagick@6
+```
+
+Otherwise, download and build [ImageMagick][] manually. You may use
+[Linux](#linux) 2nd step as an example.
+
+#### 2. Build & install `ktools`
+
+```shell
+$ cd /path/to/ktools
+$ cmake \
+    -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-co--variable=libname Magick++).dylib" \
+    -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
+    -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-co--variable=libname MagickCore).dylib" \
+    -DImageMagick_MagickWand_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickWand | tail -c+3)" \
+    -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-co--variable=libname MagickWand).dylib" \
+  .
+$ ./configure && make
 $ sudo make install
 ```
 
@@ -299,7 +356,7 @@ See `NOTICE.txt`.
 [docker hub]: https://hub.docker.com/
 [docker]: https://www.docker.com/
 [don't starve]: https://www.klei.com/games/dont-starve
-[github workflow ci status]: https://img.shields.io/github/workflow/status/victorpopkov/ktools/CI?label=CI
+[homebrew]: https://brew.sh/
 [imagemagick]: https://imagemagick.org/index.php
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
