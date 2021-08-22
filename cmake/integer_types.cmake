@@ -1,3 +1,4 @@
+# cmake-lint: disable=C0103
 include(CheckTypeSize)
 
 check_type_size(int32_t INT32_T)

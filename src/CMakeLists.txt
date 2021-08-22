@@ -1,6 +1,6 @@
-set(local_ktech_SOURCES ktech/ktech.cpp ktech/ktech_options.cpp)
+set(LOCAL_KTECH_SOURCES ktech/ktech.cpp ktech/ktech_options.cpp)
 
-set(local_ktech_HEADERS
+set(LOCAL_KTECH_HEADERS
     ktech/ktech.hpp
     ktech/ktech_common.hpp
     ktech/image_processing.hpp
@@ -20,7 +20,7 @@ set(local_ktech_HEADERS
     common/file_abstraction.hpp
     common/ktools_options_customization.hpp)
 
-set(local_krane_SOURCES
+set(LOCAL_KRANE_SOURCES
     krane/krane.cpp
     krane/krane_options.cpp
     krane/kbuild.cpp
@@ -29,7 +29,7 @@ set(local_krane_SOURCES
     krane/kanim_serialize.cpp
     krane/scml.cpp)
 
-set(local_krane_HEADERS
+set(LOCAL_KRANE_HEADERS
     krane/krane.hpp
     krane/krane_common.hpp
     krane/krane_options.hpp
@@ -52,12 +52,12 @@ set(local_krane_HEADERS
     common/file_abstraction.hpp
     common/ktools_options_customization.hpp)
 
-set(local_ktool_common_SOURCES
+set(LOCAL_KTOOL_COMMON_SOURCES
     common/ktools_common.cpp common/file_abstraction.cpp common/ktex/ktex.cpp
     common/ktex/specs.cpp common/atlas.cpp
     common/ktools_options_customization.cpp)
 
-set(local_ktool_common_HEADERS
+set(LOCAL_KTOOL_COMMON_HEADERS
     common/metaprogramming.hpp
     common/ktools_common.hpp
     common/ktools_bit_op.hpp
@@ -70,53 +70,53 @@ set(local_ktool_common_HEADERS
     common/atlas.hpp
     common/ktools_options_customization.hpp)
 
-set(prefixed_ktech_SOURCES)
-set(prefixed_ktech_HEADERS)
+set(PREFIXED_KTECH_SOURCES)
+set(PREFIXED_KTECH_HEADERS)
 
-foreach(src ${local_ktech_SOURCES})
-  list(APPEND prefixed_ktech_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${src})
+foreach(src ${LOCAL_KTECH_SOURCES})
+  list(APPEND PREFIXED_KTECH_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${src})
 endforeach()
-foreach(hdr ${local_ktech_HEADERS})
-  list(APPEND prefixed_ktech_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/${hdr})
-endforeach()
-
-set(prefixed_krane_SOURCES)
-set(prefixed_krane_HEADERS)
-
-foreach(src ${local_krane_SOURCES})
-  list(APPEND prefixed_krane_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${src})
-endforeach()
-foreach(hdr ${local_krane_HEADERS})
-  list(APPEND prefixed_krane_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/${hdr})
+foreach(hdr ${LOCAL_KTECH_HEADERS})
+  list(APPEND PREFIXED_KTECH_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/${hdr})
 endforeach()
 
-set(prefixed_ktool_common_SOURCES)
-set(prefixed_ktool_common_HEADERS)
+set(PREFIXED_KRANE_SOURCES)
+set(PREFIXED_KRANE_HEADERS)
 
-foreach(src ${local_ktool_common_SOURCES})
-  list(APPEND prefixed_ktool_common_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${src})
+foreach(src ${LOCAL_KRANE_SOURCES})
+  list(APPEND PREFIXED_KRANE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${src})
 endforeach()
-foreach(hdr ${local_ktool_common_HEADERS})
-  list(APPEND prefixed_ktool_common_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/${hdr})
+foreach(hdr ${LOCAL_KRANE_HEADERS})
+  list(APPEND PREFIXED_KRANE_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/${hdr})
+endforeach()
+
+set(PREFIXED_KTOOL_COMMON_SOURCES)
+set(PREFIXED_KTOOL_COMMON_HEADERS)
+
+foreach(src ${LOCAL_KTOOL_COMMON_SOURCES})
+  list(APPEND PREFIXED_KTOOL_COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${src})
+endforeach()
+foreach(hdr ${LOCAL_KTOOL_COMMON_HEADERS})
+  list(APPEND PREFIXED_KTOOL_COMMON_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/${hdr})
 endforeach()
 
 set(ktech_SOURCES
-    "${prefixed_ktech_SOURCES}"
+    "${PREFIXED_KTECH_SOURCES}"
     PARENT_SCOPE)
 set(ktech_HEADERS
-    "${prefixed_ktech_HEADERS}"
+    "${PREFIXED_KTECH_HEADERS}"
     PARENT_SCOPE)
 
 set(krane_SOURCES
-    "${prefixed_krane_SOURCES}"
+    "${PREFIXED_KRANE_SOURCES}"
     PARENT_SCOPE)
 set(krane_HEADERS
-    "${prefixed_krane_HEADERS}"
+    "${PREFIXED_KRANE_HEADERS}"
     PARENT_SCOPE)
 
 set(ktool_common_SOURCES
-    "${prefixed_ktool_common_SOURCES}"
+    "${PREFIXED_KTOOL_COMMON_SOURCES}"
     PARENT_SCOPE)
 set(ktool_common_HEADERS
-    "${prefixed_ktool_common_HEADERS}"
+    "${PREFIXED_KTOOL_COMMON_HEADERS}"
     PARENT_SCOPE)
