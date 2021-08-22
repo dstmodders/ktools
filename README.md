@@ -33,7 +33,7 @@ and the space following it should not be typed.
 A bidirectional cross-platform converter between [Klei Entertainment][]'s TEX
 texture format and PNG.
 
-### Basic Usage & Examples
+### Basic usage & examples
 
 `ktech` converts bidirectionally between Klei's TEX format (KTEX) and PNG. If
 the first argument given to `ktech` is a KTEX file, it will be converted to PNG,
@@ -61,7 +61,7 @@ To convert `some/path/to/a.png` to `mymod/modicon.tex`:
 $ ktech some/path/to/a.png mymod/modicon.tex
 ```
 
-### Full Usage
+### Full usage
 
 The following message (possibly more up to date than what is documented here)
 may be obtained by entering:
@@ -140,7 +140,7 @@ A cross-platform decompiler for [Klei Entertainment][]'s animation format.
 
 `krane`'s output is a [Spriter][] project.
 
-### Basic Usage & Examples
+### Basic usage & examples
 
 `krane`'s primary usage is converting an animation file (`anim.bin`) and a build
 file (`build.bin`) as found within the ZIPs of [Don't Starve][]'s `anim/`
@@ -179,7 +179,7 @@ will place the shaded atlases of `build.bin` in `output_dir`:
 $ krane --mark-atlases build.bin output_dir
 ```
 
-### Full Usage
+### Full usage
 
 The following message (possibly more up to date than what is documented here)
 may be obtained by entering:
@@ -257,40 +257,41 @@ Example for the fresh instance of the latest Debian "bullseye" release.
 
 ```shell
 $ sudo apt-get update
-$ sudo apt-get install -y --no-install-recommends \
-    build-essential \
-    ca-certificates \
-    cmake \
-    libpng-dev \
-    libreadline-dev \
-    libzip-dev \
-    nodejs \
-    pkg-config \
-    wget
+$ sudo apt-get install build-essential cmake libpng-dev libreadline-dev libzip-dev
 ```
 
 #### 2. Build & install [ImageMagick][]
 
 ```shell
+$ sudo apt-get install wget
 $ export IMAGEMAGICK_VERSION='6.9.12-19'
 $ wget -P /tmp/ "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
 $ tar xf "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz" -C /tmp/
 $ cd /tmp/ImageMagick-${IMAGEMAGICK_VERSION}/
 $ ./configure && make
-$ make install
-$ ldconfig /usr/local/lib/
+$ sudo make install
+$ sudo ldconfig /usr/local/lib/
 ```
 
 #### 3. Build & install `ktools`
 
 ```shell
 $ cd /path/to/ktools
+$ ./configure && make
+$ sudo make install
+```
+
+If for some reason there was an issue in finding an [ImageMagick][] library, you
+can point [CMake][] to it manually:
+
+```shell
+$ sudo apt-get install pkg-config
 $ cmake \
-    -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-co--variable=libname Magick++).so" \
+    -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-config --variable=libname Magick++).so" \
     -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
-    -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-co--variable=libname MagickCore).so" \
+    -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-config --variable=libname MagickCore).so" \
     -DImageMagick_MagickWand_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickWand | tail -c+3)" \
-    -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-co--variable=libname MagickWand).so" \
+    -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-config --variable=libname MagickWand).so" \
   .
 $ ./configure && make
 $ sudo make install
@@ -307,18 +308,27 @@ $ brew install imagemagick@6
 ```
 
 Otherwise, download and build [ImageMagick][] manually. You may use
-[Linux](#linux) 2nd step as an example.
+[Linux 2nd step](#linux) as an example.
 
 #### 2. Build & install `ktools`
 
 ```shell
 $ cd /path/to/ktools
+$ ./configure && make
+$ sudo make install
+```
+
+If for some reason there was an issue in finding an [ImageMagick][] library, you
+can point [CMake][] to it manually:
+
+```shell
+$ brew install pkg-config
 $ cmake \
-    -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-co--variable=libname Magick++).dylib" \
+    -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-config --variable=libname Magick++).dylib" \
     -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
-    -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-co--variable=libname MagickCore).dylib" \
+    -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-config --variable=libname MagickCore).dylib" \
     -DImageMagick_MagickWand_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickWand | tail -c+3)" \
-    -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-co--variable=libname MagickWand).dylib" \
+    -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-config --variable=libname MagickWand).dylib" \
   .
 $ ./configure && make
 $ sudo make install
