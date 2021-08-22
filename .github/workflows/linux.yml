@@ -1,4 +1,4 @@
-name: CI
+name: Linux
 
 on:
   push:
@@ -19,7 +19,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Set a job-wide environment variables
         run: |
-          echo "ARCH=$(arch)" >> $GITHUB_ENV
           echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
           echo "GITHUB_JOB_NAME=build" >> $GITHUB_ENV
       - name: Install dependencies
