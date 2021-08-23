@@ -4,10 +4,9 @@ BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT_DIR='./output'
 SRC_DIR='./src'
 
-png_from_generated_tex() {
-  to="$1"
-  name="$2"
-  ktech "${OUTPUT_DIR}/${name}.tex" "${to}/${name}.png"
+print_title() {
+  title="$1"
+  printf '\n%s:\n\n' "${title}"
 }
 
 png_to_tex_compression() {
@@ -34,6 +33,12 @@ png_to_tex_filter() {
     "${OUTPUT_DIR}/minimap_atlas_${filter}.tex"
 }
 
+png_from_generated_tex() {
+  to="$1"
+  name="$2"
+  ktech "${OUTPUT_DIR}/${name}.tex" "${to}/${name}.png"
+}
+
 cd "${BASE_DIR}" || exit 1
 
 # prepare
@@ -49,17 +54,17 @@ printf 'Generating ktech output...'
   printf 'TEX info:\n\n'
   ktech --verbose --info ./src/minimap_atlas.tex
 
-  printf '\nTEX => PNG (default):\n\n'
+  print_title 'TEX => PNG (default)'
   ktech --verbose ./src/minimap_atlas.tex "${OUTPUT_DIR}"
 
-  printf '\nTEX => PNG (quality):\n\n'
+  print_title 'TEX => PNG (quality)'
   ktech \
     --verbose \
     --quality 10 \
     "${src_tex}" \
     "${OUTPUT_DIR}/minimap_atlas_quality-10.png"
 
-  printf '\nTEX => PNG (resize):\n\n'
+  print_title 'TEX => PNG (resize)'
   ktech \
     --verbose \
     --height 512 \
@@ -67,7 +72,7 @@ printf 'Generating ktech output...'
     "${src_tex}" \
     "${OUTPUT_DIR}/minimap_atlas_512x512.png"
 
-  printf '\nTEX => PNG (extend):\n\n'
+  print_title 'TEX => PNG (extend)'
   ktech \
     --verbose \
     --height 512 \
@@ -77,10 +82,10 @@ printf 'Generating ktech output...'
     "${OUTPUT_DIR}/minimap_atlas_512x512_extend.png"
 
   # PNG => TEX
-  printf '\nPNG => TEX (default):\n\n'
+  print_title 'PNG => TEX (default)'
   ktech --verbose "${src_png}" "${OUTPUT_DIR}"
 
-  printf '\nPNG => TEX (atlas):\n\n'
+  print_title 'PNG => TEX (atlas)'
   ktech \
     --verbose \
     --atlas "${OUTPUT_DIR}/minimap_atlas_atlas.xml" \
@@ -109,24 +114,24 @@ src_anim_dir="${SRC_DIR}/chester"
 output_anim_dir="${OUTPUT_DIR}/chester"
 printf 'Generating krane output...'
 {
-  printf '\nanim.bin + build.bin => SCML (default):\n\n'
+  print_title 'krane (default)'
   krane --verbose "${src_anim_dir}" "${output_anim_dir}"
 
-  printf '\nanim.bin + build.bin => SCML (mark-atlases):\n\n'
+  print_title 'krane (mark-atlases)'
   krane \
     --verbose \
     --mark-atlases \
     "${src_anim_dir}" \
     "${output_anim_dir}_mark-atlases"
 
-  printf '\nanim.bin + build.bin => SCML (bank):\n\n'
+  print_title 'krane (bank)'
   krane \
     --verbose \
     --bank chester \
     "${src_anim_dir}" \
     "${output_anim_dir}_bank"
 
-  printf '\nanim.bin + build.bin => SCML (rename):\n\n'
+  print_title 'krane (rename)'
   krane \
     --verbose \
     --rename-bank chester_renamed \
