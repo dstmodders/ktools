@@ -1,17 +1,14 @@
-> Since I do sometimes develop mods for this game, I'm still dependent on this
-> project. However, it does seem to be abandoned (the last commit was in 2016).
-> So here we are...
->
-> As for 21.08.2021, in the next couple of days, I'm planning to:
->
-> - Release `v4.4.1` with [#13](https://github.com/nsimplex/ktools/pull/13) fix
-> - Release `v4.5.0` with [ImageMagick][] version 7 support
-> - Release and update the corresponding [Docker][] images
-
 # ktools
 
-[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=Linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
-[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macOS)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
+[![Debian Size](https://img.shields.io/docker/image-size/viktorpopkov/ktools/debian?label=debian%20size)](https://hub.docker.com/r/viktorpopkov/ktools)
+[![Alpine Size](https://img.shields.io/docker/image-size/viktorpopkov/ktools/alpine?label=alpine%20size)](https://hub.docker.com/r/viktorpopkov/ktools)
+[![Linux](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=Linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
+[![macOS](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macOS)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
+
+> As I do sometimes develop mods for this game, I'm still dependent on this
+> project. However, the original one seems to be abandoned (the last commit was
+> in 2016), so I've decided to make a proper fork and continue with the
+> development.
 
 A set of cross-platform modding tools for the game [Don't Starve][], by
 [Klei Entertainment][].
@@ -71,7 +68,7 @@ $ ktech --help
 ```
 
 ```text
-Usage: ktech [OPTION]... [--] <input-file[,...]> [output-path]
+Usage: ktech [OPTION]... [--] <INPUT-PATH>... <OUTPUT-DIR>
 
 Options for TEX input:
     -Q,  --quality  <0-100>
@@ -80,6 +77,8 @@ Options for TEX input:
     -i,  --info
          Prints information for a given TEX file instead of converting it.
 Options for TEX output:
+    --atlas  <path>
+         Name of the atlas to be generated.
     -c,  --compression  <dxt1|dxt3|dxt5|rgb|rgba>
          Compression type for TEX creation. Defaults to dxt5.
     -f,  --filter  <lanczos|mitchell|bicubic|catrom|cubic|box>
@@ -100,10 +99,18 @@ Other options:
     --pow2
          Rounds width and height up to a power of 2. Applied after the options
          `width' and `height', if given.
+    --square
+         Makes the output texture a square, by setting the width and height to
+         their maximum values. Applied after the options `width', `height' and
+         `pow2', if given.
     --extend
          Extends the boundaries of the image instead of resizing. Only relevant
-         if either of the options `width', `height' or `pow2' are given. Its
-         primary use is generating save and selection screen portraits.
+         if either of the options `width', `height', `pow2' or `square' are
+         given. Its primary use is generating save and selection screen
+         portraits.
+    --extend-left
+         Causes the `extend' option to place the original image aligned to the
+         right (filling the space on its left). Implies `extend'.
     -v,  --verbose  (accepted multiple times)
          Increases output verbosity.
     -q,  --quiet
