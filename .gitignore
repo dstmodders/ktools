@@ -21,5 +21,7 @@ local/**
 
 *.tar.gz
 *.zip
-releases
+releases/
 releases/*
+
+test/output/
