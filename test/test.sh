@@ -101,13 +101,39 @@ printf 'Generating ktech output...'
   png_to_tex_filter "${src_png}" 'cubic'
   png_to_tex_filter "${src_png}" 'lanczos'
   png_to_tex_filter "${src_png}" 'mitchell'
-
-  # type
-  png_to_tex_type "${src_png}" '1d'
-  png_to_tex_type "${src_png}" '2d'
-  png_to_tex_type "${src_png}" '3d'
-  png_to_tex_type "${src_png}" 'cube'
 } > "${OUTPUT_DIR}/log.txt" 2>&1
+printf ' Done\n'
+
+# krane
+src_anim_dir="${SRC_DIR}/chester"
+output_anim_dir="${OUTPUT_DIR}/chester"
+printf 'Generating krane output...'
+{
+  printf '\nanim.bin + build.bin => SCML (default):\n\n'
+  krane --verbose "${src_anim_dir}" "${output_anim_dir}"
+
+  printf '\nanim.bin + build.bin => SCML (mark-atlases):\n\n'
+  krane \
+    --verbose \
+    --mark-atlases \
+    "${src_anim_dir}" \
+    "${output_anim_dir}_mark-atlases"
+
+  printf '\nanim.bin + build.bin => SCML (bank):\n\n'
+  krane \
+    --verbose \
+    --bank chester \
+    "${src_anim_dir}" \
+    "${output_anim_dir}_bank"
+
+  printf '\nanim.bin + build.bin => SCML (rename):\n\n'
+  krane \
+    --verbose \
+    --rename-bank chester_renamed \
+    --rename-build chester_build_renamed \
+    "${src_anim_dir}" \
+    "${output_anim_dir}_rename"
+} >> "${OUTPUT_DIR}/log.txt" 2>&1
 printf ' Done\n'
 
 # create PNGs from generated TEXs
