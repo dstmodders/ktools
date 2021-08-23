@@ -61,6 +61,13 @@ jobs:
         run: ktech --version
       - name: Run krane
         run: krane --version
+      - name: Test
+        run: ./test/test.sh
+      - name: Upload test output
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-test-output
+          path: test/output/
       - name: Prepare success Slack notification
         if: success()
         run: echo "SLACK_CUSTOM_PAYLOAD=${SLACK_CUSTOM_PAYLOAD}" >> $GITHUB_ENV
