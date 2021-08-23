@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [4.4.1][] - 2021-08-23
+
 ### Changed
 
 - Improve low animation scales numerical stability
@@ -31,7 +33,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 First release.
 
-[unreleased]: https://github.com/victorpopkov/ktools/compare/4.4.0...HEAD
+[unreleased]: https://github.com/victorpopkov/ktools/compare/4.4.1...HEAD
+[4.4.1]: https://github.com/victorpopkov/ktools/compare/4.4.0...4.4.1
 [4.4.0]: https://github.com/victorpopkov/ktools/compare/4.3.1...4.4.0
 [4.3.1]: https://github.com/victorpopkov/ktools/compare/4.3.0...4.3.1
 [eslint]: https://eslint.org/
