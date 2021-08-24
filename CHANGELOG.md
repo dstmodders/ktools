@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+### Changed
+
+- Migrate [ImageMagick][] from 6 to 7
+
 ## [4.4.1][] - 2021-08-23
 
 ### Changed
@@ -40,6 +44,7 @@ First release.
 [eslint]: https://eslint.org/
 [github actions]: https://github.com/features/actions
 [github]: https://github.com/
+[imagemagick]: https://imagemagick.org/index.php
 [prettier]: https://prettier.io/
 [remark]: https://remark.js.org/
 [stylelint]: https://stylelint.io/
