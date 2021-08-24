@@ -3,10 +3,17 @@
 cmake-build-*/
 
 ### Project ###
+*.cbp
 CMakeCache.txt
 CMakeFiles/
+Testing/
 cmake_install.cmake
 cmake_uninstall.cmake
+config.h
+install_manifest.txt
+krane
+ktech
+test/output/
 
 **/Makefile
 build/**
@@ -23,5 +30,3 @@ local/**
 *.zip
 releases/
 releases/*
-
-test/output/
