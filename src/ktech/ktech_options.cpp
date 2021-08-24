@@ -331,9 +331,7 @@ KTech::parse_commandline_options(int &argc, char **&argv,
 
         options::filter = filter_trans.translate(filter_opt.getValue());
 
-        /*
         options::no_premultiply = no_premultiply_flag.getValue();
-        */
 
         options::no_mipmaps = no_mipmaps_flag.getValue();
 

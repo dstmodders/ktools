@@ -163,11 +163,11 @@ class ktexCompressor : public binary_operation_t<KTEX::File &, Magick::Image> {
         }
 
         if (!options::no_premultiply) {
-            if (verbosity >= 1) {
+            if (options::verbosity >= 1) {
                 std::cout << "Premultiplying alpha..." << std::endl;
             }
             std::for_each(imgs.begin(), imgs.end(), ImOp::premultiplyAlpha());
-        } else if (verbosity >= 1) {
+        } else if (options::verbosity >= 1) {
             std::cout << "Skipping alpha premultiplication..." << std::endl;
         }
 
@@ -208,11 +208,11 @@ class ktexDecompressor : public operation_t<const KTEX::File &, Magick::Image> {
         }
 
         if (!options::no_premultiply) {
-            if (verbosity >= 1) {
+            if (options::verbosity >= 1) {
                 std::cout << "Demultiplying alpha..." << std::endl;
             }
             std::for_each(imgs.begin(), imgs.end(), ImOp::demultiplyAlpha());
-        } else if (verbosity >= 1) {
+        } else if (options::verbosity >= 1) {
             std::cout << "Skipping alpha demultiplication..." << std::endl;
         }
 
