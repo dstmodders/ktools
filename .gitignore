@@ -11,9 +11,13 @@ cmake_install.cmake
 cmake_uninstall.cmake
 config.h
 install_manifest.txt
-krane
-ktech
 test/output/
+
+krane
+!src/krane/
+
+ktech
+!src/ktech/
 
 **/Makefile
 build/**
