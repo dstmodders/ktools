@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Improve code consistency
 - Migrate [ImageMagick][] from 6 to 7
 
 ## [4.4.1][] - 2021-08-23
 
 ### Changed
 
+- Improve code consistency
 - Improve low animation scales numerical stability
 
 ### Fixed
