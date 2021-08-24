@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013  simplex
+Copyright (C) 2013 simplex
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,13 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef KRANE_HPP
 #define KRANE_HPP
 
-#include "krane_common.hpp"
-#include "kbuild.hpp"
 #include "kanim.hpp"
+#include "kbuild.hpp"
+#include "krane_common.hpp"
 #include "scml.hpp"
 
 #include "file_abstraction.hpp"
@@ -29,7 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "krane_options.hpp"
 
 namespace Krane {
-	void parse_commandline_options(int& argc, char**& argv, std::list<KTools::VirtualPath>& input_paths, Compat::Path& output_path);
+void parse_commandline_options(int &argc, char **&argv,
+                               std::list<KTools::VirtualPath> &input_paths,
+                               Compat::Path &output_path);
 }
 
 #endif

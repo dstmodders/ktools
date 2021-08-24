@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013  simplex
+Copyright (C) 2013 simplex
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,16 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef KRANE_SCML_HPP
 #define KRANE_SCML_HPP
 
-#include "krane_common.hpp"
-#include "kbuild.hpp"
 #include "kanim.hpp"
+#include "kbuild.hpp"
+#include "krane_common.hpp"
 
 namespace Krane {
-	void exportToSCML(std::ostream& out, const KBuild& bild, const KAnimBankCollection& banks);
+void exportToSCML(std::ostream &out, const KBuild &bild,
+                  const KAnimBankCollection &banks);
 }
 
 #endif

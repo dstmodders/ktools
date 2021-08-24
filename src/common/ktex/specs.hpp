@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013  simplex
+Copyright (C) 2013 simplex
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,128 +15,122 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef KTOOLS_KTEX_SPECS_HPP
 #define KTOOLS_KTEX_SPECS_HPP
 
 #include "ktex/headerfield_specs.hpp"
 
 namespace KTools {
-	namespace KTEX {
-		struct HeaderSpecs {
-			static const uint32_t MAGIC_NUMBER;
+namespace KTEX {
+struct HeaderSpecs {
+    static const uint32_t MAGIC_NUMBER;
 
-			static const size_t DATASIZE = 4;
-			static const size_t TOTALSIZE = 8;
+    static const size_t DATASIZE = 4;
+    static const size_t TOTALSIZE = 8;
 
-			static const class FieldSpecsMap_t {
-				typedef std::map<std::string, HeaderFieldSpec> map_t;
-				map_t M;
+    static const class FieldSpecsMap_t {
+        typedef std::map<std::string, HeaderFieldSpec> map_t;
+        map_t M;
 
-				// Ids sorted by the corresponding
-				// HeaderFieldSpec's offset.
-				typedef std::vector<std::string> sorted_ids_t;
-				sorted_ids_t sorted_ids;
-			public:
-				typedef map_t::const_iterator const_iterator;
-				// It's always const.
-				typedef const_iterator iterator;
+        // Ids sorted by the corresponding
+        // HeaderFieldSpec's offset.
+        typedef std::vector<std::string> sorted_ids_t;
+        sorted_ids_t sorted_ids;
 
-				size_t size() const {
-					return M.size();
-				}
+      public:
+        typedef map_t::const_iterator const_iterator;
+        // It's always const.
+        typedef const_iterator iterator;
 
-				FieldSpecsMap_t(HeaderFieldSpec* A, size_t length) {
-					unsigned int offset = 0;
-					for(size_t i = 0; i < length; i++) {
-						A[i].offset = offset;
-						offset += A[i].length;
+        size_t size() const { return M.size(); }
 
-						M.insert( std::make_pair(A[i].id, A[i]) );
-						sorted_ids.push_back(A[i].id);
-					}
-				}
+        FieldSpecsMap_t(HeaderFieldSpec *A, size_t length) {
+            unsigned int offset = 0;
+            for (size_t i = 0; i < length; i++) {
+                A[i].offset = offset;
+                offset += A[i].length;
 
-				const_iterator begin() const {
-					return M.begin();
-				}
+                M.insert(std::make_pair(A[i].id, A[i]));
+                sorted_ids.push_back(A[i].id);
+            }
+        }
 
-				const_iterator end() const {
-					return M.end();
-				}
+        const_iterator begin() const { return M.begin(); }
 
-				const_iterator find(const std::string& k) const {
-					return M.find(k);
-				}
+        const_iterator end() const { return M.end(); }
 
-				const HeaderFieldSpec& operator[](const std::string& k) const {
-					const_iterator it = M.find(k);
-					if(it != M.end()) {
-						return it->second;
-					}
-					else {
-						return HeaderFieldSpec::Invalid;
-					}
-				}
+        const_iterator find(const std::string &k) const { return M.find(k); }
 
-				class offset_iterator : public sorted_ids_t::const_iterator {
-					friend class FieldSpecsMap_t;
+        const HeaderFieldSpec &operator[](const std::string &k) const {
+            const_iterator it = M.find(k);
+            if (it != M.end()) {
+                return it->second;
+            } else {
+                return HeaderFieldSpec::Invalid;
+            }
+        }
 
-					typedef sorted_ids_t::const_iterator SUPER;
+        class offset_iterator : public sorted_ids_t::const_iterator {
+            friend class FieldSpecsMap_t;
 
-					const FieldSpecsMap_t* map;
+            typedef sorted_ids_t::const_iterator SUPER;
 
-					offset_iterator(const FieldSpecsMap_t* _map, const SUPER& _base) : SUPER(_base), map(_map) {}
-				public:
-					offset_iterator() : map(NULL) {}
+            const FieldSpecsMap_t *map;
 
-					const map_t::value_type& operator*() const {
-						if(map == NULL) {
-							throw Error("attempt to dereference an invalid iterator");
-						}
-						return *map->find(SUPER::operator*());
-					}
+            offset_iterator(const FieldSpecsMap_t *_map, const SUPER &_base)
+                : SUPER(_base), map(_map) {}
 
-					const map_t::value_type* operator->() const {
-						if(map == NULL) {
-							throw Error("attempt to dereference an invalid iterator");
-						}
-						return &*map->find(SUPER::operator*());
-					}
+          public:
+            offset_iterator() : map(NULL) {}
 
-					offset_iterator& operator++() {
-						SUPER::operator++();
-						return *this;
-					}
+            const map_t::value_type &operator*() const {
+                if (map == NULL) {
+                    throw Error("attempt to dereference an invalid iterator");
+                }
+                return *map->find(SUPER::operator*());
+            }
 
-					offset_iterator operator++(int) {
-						offset_iterator dup(*this);
-						++(*this);
-						return dup;
-					}
+            const map_t::value_type *operator->() const {
+                if (map == NULL) {
+                    throw Error("attempt to dereference an invalid iterator");
+                }
+                return &*map->find(SUPER::operator*());
+            }
 
-					bool operator==(const offset_iterator& it) const {
-						return *static_cast<const SUPER*>(this) == *static_cast<const SUPER*>(&it);
-					}
+            offset_iterator &operator++() {
+                SUPER::operator++();
+                return *this;
+            }
 
-					bool operator!=(const offset_iterator& it) const {
-						return !(*this == it);
-					}
-				};
+            offset_iterator operator++(int) {
+                offset_iterator dup(*this);
+                ++(*this);
+                return dup;
+            }
 
-				offset_iterator offset_begin() const {
-					return offset_iterator(this, sorted_ids.begin());
-				}
+            bool operator==(const offset_iterator &it) const {
+                return *static_cast<const SUPER *>(this) ==
+                       *static_cast<const SUPER *>(&it);
+            }
 
-				offset_iterator offset_end() const {
-					return offset_iterator(this, sorted_ids.end());
-				}
-			} FieldSpecs;
+            bool operator!=(const offset_iterator &it) const {
+                return !(*this == it);
+            }
+        };
 
-			typedef FieldSpecsMap_t::const_iterator field_spec_iterator;
-			typedef FieldSpecsMap_t::offset_iterator field_spec_offset_iterator;
-		};
-	}
-}
+        offset_iterator offset_begin() const {
+            return offset_iterator(this, sorted_ids.begin());
+        }
+
+        offset_iterator offset_end() const {
+            return offset_iterator(this, sorted_ids.end());
+        }
+    } FieldSpecs;
+
+    typedef FieldSpecsMap_t::const_iterator field_spec_iterator;
+    typedef FieldSpecsMap_t::offset_iterator field_spec_offset_iterator;
+};
+} // namespace KTEX
+} // namespace KTools
 
 #endif

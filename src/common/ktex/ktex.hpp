@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013  simplex
+Copyright (C) 2013 simplex
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,253 +15,259 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef KTOOLS_KTEX_HPP
 #define KTOOLS_KTEX_HPP
 
-#include "ktools_common.hpp"
-#include "ktex/specs.hpp"
 #include "binary_io_utils.hpp"
+#include "ktex/specs.hpp"
+#include "ktools_common.hpp"
 
 #include <squish/squish.h>
 
 namespace KTools {
-	namespace KTEX {
-		class File : public NonCopyable {
-		public:
-			class Header : public HeaderSpecs {
-				friend class File;
-			public:
-				typedef uint32_t data_t;
-				data_t data;
+namespace KTEX {
+class File : public NonCopyable {
+  public:
+    class Header : public HeaderSpecs {
+        friend class File;
 
-				KTools::BinIOHelper io;
-	
-				HeaderFieldSpec::value_t getField(const std::string& id) const {
-					const HeaderFieldSpec& spec = FieldSpecs[id];
+      public:
+        typedef uint32_t data_t;
+        data_t data;
 
-					if(!spec.isValid()) return HeaderFieldSpec::value_t();
-	
-					return (data >> spec.offset) & ((1 << spec.length) - 1);
-				}
+        KTools::BinIOHelper io;
 
-				const std::string& getFieldString(const std::string& id) const {
-					static const std::string EmptyString;
+        HeaderFieldSpec::value_t getField(const std::string &id) const {
+            const HeaderFieldSpec &spec = FieldSpecs[id];
 
-					const HeaderFieldSpec& spec = FieldSpecs[id];
+            if (!spec.isValid())
+                return HeaderFieldSpec::value_t();
 
-					if(!spec.isValid()) return EmptyString;
+            return (data >> spec.offset) & ((1 << spec.length) - 1);
+        }
 
-					return spec.normalize_value_inverse(getField(id));
-				}
-	
-				template<typename T>
-				void setField(const std::string& id, T val) {
-					const HeaderFieldSpec& spec = FieldSpecs[id];
-	
-					data_t mask = ((1 << spec.length) - 1) << spec.offset;
-	
-					data_t maskedval = (spec.normalize_value(val) << spec.offset) & mask;
-	
-					data = (data & ~mask) | maskedval;
-				}
-				
-				operator uint32_t() {
-					return data;
-				}
-	
-				void print(std::ostream& out, int verbosity = -1, size_t indentation = 0, const std::string& indent_string = "\t") const;
-				std::ostream& dump(std::ostream& out) const;
-				std::istream& load(std::istream& in);
+        const std::string &getFieldString(const std::string &id) const {
+            static const std::string EmptyString;
 
-				void reset() {
-					data = 0;
-					for(field_spec_iterator it = FieldSpecs.begin(); it != FieldSpecs.end(); ++it) {
-						setField(it->first, it->second.value_default);
-					}
-				}
+            const HeaderFieldSpec &spec = FieldSpecs[id];
 
-				Header() { reset(); }
+            if (!spec.isValid())
+                return EmptyString;
 
-				Header& operator=(const Header& h) {
-					data = h.data;
-					if(io.isUnknownSource()) {
-						io.copySource(h.io);
-					}
-					else if(io.hasInverseSourceOf(h.io)) {
-						io.reorder(data);
-					}
-					io.copyTarget(h.io);
-					return *this;
-				}
-			};
+            return spec.normalize_value_inverse(getField(id));
+        }
 
-			class Mipmap : public NonCopyable {
-			public:
-				typedef squish::u8 byte_t;
+        template <typename T> void setField(const std::string &id, T val) {
+            const HeaderFieldSpec &spec = FieldSpecs[id];
 
-				const File* parent;
+            data_t mask = ((1 << spec.length) - 1) << spec.offset;
 
-			private:
-				friend class File;
-				byte_t* data;
-				uint32_t datasz;
+            data_t maskedval =
+                (spec.normalize_value(val) << spec.offset) & mask;
 
-			public:
-				uint16_t width;
-				uint16_t height;
-				uint16_t pitch;
+            data = (data & ~mask) | maskedval;
+        }
 
-				const byte_t * getData() const {
-					return data;
-				}
+        operator uint32_t() { return data; }
 
-				uint32_t getDataSize() const {
-					return datasz;
-				}
+        void print(std::ostream &out, int verbosity = -1,
+                   size_t indentation = 0,
+                   const std::string &indent_string = "\t") const;
+        std::ostream &dump(std::ostream &out) const;
+        std::istream &load(std::istream &in);
 
-				void setDataSize(uint32_t sz) {
-					delete[] data;
-					if(sz != 0) {
-						data = new byte_t[sz];
-					} else {
-						data = NULL;
-					}
-					datasz = sz;
-				}
+        void reset() {
+            data = 0;
+            for (field_spec_iterator it = FieldSpecs.begin();
+                 it != FieldSpecs.end(); ++it) {
+                setField(it->first, it->second.value_default);
+            }
+        }
 
-				Mipmap() : parent(NULL), data(NULL), datasz(0), width(0), height(0), pitch(0) {}
+        Header() { reset(); }
 
-				~Mipmap() {
-					setDataSize(0);
-				}
+        Header &operator=(const Header &h) {
+            data = h.data;
+            if (io.isUnknownSource()) {
+                io.copySource(h.io);
+            } else if (io.hasInverseSourceOf(h.io)) {
+                io.reorder(data);
+            }
+            io.copyTarget(h.io);
+            return *this;
+        }
+    };
 
-				/*
-				 * The "pre" versions refer to the dumping/loading of metadata (width, etc.).
-				 * The "post" versions refer to the dumping/loading of the raw data content.
-				 */
-				void print(std::ostream& out, size_t indentation = 0, const std::string& indent_string = "\t") const;
-				std::ostream& dumpPre(std::ostream& out) const;
-				std::ostream& dumpPost(std::ostream& out) const;
-				std::istream& loadPre(std::istream& in);
-				std::istream& loadPost(std::istream& in);
-			};
+    class Mipmap : public NonCopyable {
+      public:
+        typedef squish::u8 byte_t;
 
-			struct CompressionFormat {
-				bool is_uncompressed;
-				int squish_flags;
-			};
+        const File *parent;
 
-		public:
-			Header header;
-			KTools::BinIOHelper& io;
-			
-		private:
-			Mipmap* Mipmaps;
+      private:
+        friend class File;
+        byte_t *data;
+        uint32_t datasz;
 
-			void deallocateMipmaps() {
-				delete[] Mipmaps;
-				Mipmaps = NULL;
-			}
+      public:
+        uint16_t width;
+        uint16_t height;
+        uint16_t pitch;
 
-			void reallocateMipmaps(size_t howmany) {
-				deallocateMipmaps();
+        const byte_t *getData() const { return data; }
 
-				header.setField("mipmap_count", howmany);
-				
-				if(howmany > 0) {
-					Mipmaps = new Mipmap[howmany];
-					for(size_t i = 0; i < howmany; i++) {
-						Mipmaps[i].parent = this;
-					}
-				}
-			}
+        uint32_t getDataSize() const { return datasz; }
 
-			CompressionFormat getCompressionFormat() const;
+        void setDataSize(uint32_t sz) {
+            delete[] data;
+            if (sz != 0) {
+                data = new byte_t[sz];
+            } else {
+                data = NULL;
+            }
+            datasz = sz;
+        }
 
-			// We use int for compliance with squish.
-			Magick::Blob getRGBA(int& width, int& height) const;
+        Mipmap()
+            : parent(NULL), data(NULL), datasz(0), width(0), height(0),
+              pitch(0) {}
 
-			Magick::Image DecompressMipmap(const Mipmap& M, const CompressionFormat& fmt, int verbosity = -1) const;
+        ~Mipmap() { setDataSize(0); }
 
-			void CompressMipmap(Mipmap& M, const CompressionFormat& fmt, Magick::Image img, int verbosity = -1) const;
+        /*
+         * The "pre" versions refer to the dumping/loading of metadata (width,
+         * etc.). The "post" versions refer to the dumping/loading of the raw
+         * data content.
+         */
+        void print(std::ostream &out, size_t indentation = 0,
+                   const std::string &indent_string = "\t") const;
+        std::ostream &dumpPre(std::ostream &out) const;
+        std::ostream &dumpPost(std::ostream &out) const;
+        std::istream &loadPre(std::istream &in);
+        std::istream &loadPost(std::istream &in);
+    };
 
-			bool flip_image;
+    struct CompressionFormat {
+        bool is_uncompressed;
+        int squish_flags;
+    };
 
-		public:
-			static bool isKTEXFile(std::istream& in);
+  public:
+    Header header;
+    KTools::BinIOHelper &io;
 
-			static bool isKTEXFile(const std::string& path);
+  private:
+    Mipmap *Mipmaps;
 
-			void flipImage(bool b) {
-				flip_image = b;
-			}
+    void deallocateMipmaps() {
+        delete[] Mipmaps;
+        Mipmaps = NULL;
+    }
 
-			void print(std::ostream& out, int verbosity = -1, size_t indentation = 0, const std::string& indent_string = "\t") const;
-			std::ostream& dump(std::ostream& out, int verbosity = -1) const;
-			std::istream& load(std::istream& in, int verbosity = -1, bool info_only = false);
+    void reallocateMipmaps(size_t howmany) {
+        deallocateMipmaps();
 
-			void dumpTo(const std::string& path, int verbosity = 1);
-			void loadFrom(const std::string& path, int verbosity = -1, bool info_only = false);
+        header.setField("mipmap_count", howmany);
 
-			Magick::Image Decompress(int verbosity = -1) const {
-				if(header.getField("mipmap_count") == 0) {
-					return Magick::Image();
-				}
-				return DecompressMipmap(Mipmaps[0], getCompressionFormat(), verbosity);
-			}
+        if (howmany > 0) {
+            Mipmaps = new Mipmap[howmany];
+            for (size_t i = 0; i < howmany; i++) {
+                Mipmaps[i].parent = this;
+            }
+        }
+    }
 
-			template<typename OutputIterator>
-			void Decompress(OutputIterator it, int verbosity = -1) const {
-				const size_t num_mipmaps = header.getField("mipmap_count");
-				CompressionFormat fmt = getCompressionFormat();
-				for(size_t i = 0; i < num_mipmaps; i++) {
-					*it++ = DecompressMipmap(Mipmaps[i], fmt, verbosity);
-				}
-			}
+    CompressionFormat getCompressionFormat() const;
 
-			void CompressFrom(Magick::Image img, int verbosity = -1) {
-				std::list<Magick::Image> imglist;
-				imglist.push_back(img);
-				CompressFrom( imglist.begin(), imglist.end(), verbosity );
-			}
+    // We use int for compliance with squish.
+    Magick::Blob getRGBA(int &width, int &height) const;
 
-			template<typename InputIterator>
-			void CompressFrom(InputIterator first, InputIterator last, int verbosity = -1) {
-				typedef typename InputIterator::value_type img_t;
-				if(first == last) return;
+    Magick::Image DecompressMipmap(const Mipmap &M,
+                                   const CompressionFormat &fmt,
+                                   int verbosity = -1) const;
 
-				reallocateMipmaps( size_t(std::distance(first, last)) );
+    void CompressMipmap(Mipmap &M, const CompressionFormat &fmt,
+                        Magick::Image img, int verbosity = -1) const;
 
-				Mipmap* M = Mipmaps;
-				CompressionFormat fmt = getCompressionFormat();
-				img_t img = *first++;
+    bool flip_image;
 
-				if(verbosity >= 0) {
-					std::cout << "Compressing " << img.columns() << "x" << img.rows() << " image into KTEX..." << std::endl;
-				}
+  public:
+    static bool isKTEXFile(std::istream &in);
 
-				while(true) {
-					CompressMipmap( *M, fmt, img, verbosity );
+    static bool isKTEXFile(const std::string &path);
 
-					if(first == last)
-						break;
+    void flipImage(bool b) { flip_image = b; }
 
-					img = *first++;
-					M++;
-				}
+    void print(std::ostream &out, int verbosity = -1, size_t indentation = 0,
+               const std::string &indent_string = "\t") const;
+    std::ostream &dump(std::ostream &out, int verbosity = -1) const;
+    std::istream &load(std::istream &in, int verbosity = -1,
+                       bool info_only = false);
 
-				if(verbosity >= 0) {
-					std::cout << "Compressed." << std::endl;
-				}
-			}
+    void dumpTo(const std::string &path, int verbosity = 1);
+    void loadFrom(const std::string &path, int verbosity = -1,
+                  bool info_only = false);
 
-			File() : header(), io(header.io), Mipmaps(NULL), flip_image(true) {}
-			virtual ~File() { deallocateMipmaps(); }
-		};
+    Magick::Image Decompress(int verbosity = -1) const {
+        if (header.getField("mipmap_count") == 0) {
+            return Magick::Image();
+        }
+        return DecompressMipmap(Mipmaps[0], getCompressionFormat(), verbosity);
+    }
 
+    template <typename OutputIterator>
+    void Decompress(OutputIterator it, int verbosity = -1) const {
+        const size_t num_mipmaps = header.getField("mipmap_count");
+        CompressionFormat fmt = getCompressionFormat();
+        for (size_t i = 0; i < num_mipmaps; i++) {
+            *it++ = DecompressMipmap(Mipmaps[i], fmt, verbosity);
+        }
+    }
 
-	}
-}
+    void CompressFrom(Magick::Image img, int verbosity = -1) {
+        std::list<Magick::Image> imglist;
+        imglist.push_back(img);
+        CompressFrom(imglist.begin(), imglist.end(), verbosity);
+    }
+
+    template <typename InputIterator>
+    void CompressFrom(InputIterator first, InputIterator last,
+                      int verbosity = -1) {
+        typedef typename InputIterator::value_type img_t;
+        if (first == last)
+            return;
+
+        reallocateMipmaps(size_t(std::distance(first, last)));
+
+        Mipmap *M = Mipmaps;
+        CompressionFormat fmt = getCompressionFormat();
+        img_t img = *first++;
+
+        if (verbosity >= 0) {
+            std::cout << "Compressing " << img.columns() << "x" << img.rows()
+                      << " image into KTEX..." << std::endl;
+        }
+
+        while (true) {
+            CompressMipmap(*M, fmt, img, verbosity);
+
+            if (first == last)
+                break;
+
+            img = *first++;
+            M++;
+        }
+
+        if (verbosity >= 0) {
+            std::cout << "Compressed." << std::endl;
+        }
+    }
+
+    File() : header(), io(header.io), Mipmaps(NULL), flip_image(true) {}
+    virtual ~File() { deallocateMipmaps(); }
+};
+
+} // namespace KTEX
+} // namespace KTools
 
 #endif

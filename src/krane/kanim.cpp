@@ -4,9 +4,6 @@
  * Animation suffixes for each of the FACING_ possibilities (see kanim.hpp).
  */
 
-
-
-
 static const char SUFFIX_RIGHT[] = "_right";
 static const char SUFFIX_UP[] = "_up";
 static const char SUFFIX_LEFT[] = "_left";
@@ -23,32 +20,32 @@ static const char SUFFIX_90S[] = "_90s";
 
 using namespace std;
 
-#define FACEOPT(byte, suf) \
-	case byte : \
-		fullname.append(suf, sizeof(suf) - 1); \
-		break;
+#define FACEOPT(byte, suf)                                                     \
+    case byte:                                                                 \
+        fullname.append(suf, sizeof(suf) - 1);                                 \
+        break;
 
 namespace Krane {
-	void KAnim::getFullName(std::string& fullname) const {
-		fullname.assign(getName());
+void KAnim::getFullName(std::string &fullname) const {
+    fullname.assign(getName());
 
-		switch(facing_byte) {
-			FACEOPT(FACING_RIGHT, SUFFIX_RIGHT)
-			FACEOPT(FACING_UP, SUFFIX_UP)
-			FACEOPT(FACING_LEFT, SUFFIX_LEFT)
-			FACEOPT(FACING_DOWN, SUFFIX_DOWN)
-			FACEOPT(FACING_UPRIGHT, SUFFIX_UPRIGHT)
-			FACEOPT(FACING_UPLEFT, SUFFIX_UPLEFT)
-			FACEOPT(FACING_DOWNRIGHT, SUFFIX_DOWNRIGHT)
-			FACEOPT(FACING_DOWNLEFT, SUFFIX_DOWNLEFT)
-			FACEOPT(FACING_SIDE, SUFFIX_SIDE)
-			FACEOPT(FACING_UPSIDE, SUFFIX_UPSIDE)
-			FACEOPT(FACING_DOWNSIDE, SUFFIX_DOWNSIDE)
-			FACEOPT(FACING_45S, SUFFIX_45S)
-			FACEOPT(FACING_90S, SUFFIX_90S)
+    switch (facing_byte) {
+        FACEOPT(FACING_RIGHT, SUFFIX_RIGHT)
+        FACEOPT(FACING_UP, SUFFIX_UP)
+        FACEOPT(FACING_LEFT, SUFFIX_LEFT)
+        FACEOPT(FACING_DOWN, SUFFIX_DOWN)
+        FACEOPT(FACING_UPRIGHT, SUFFIX_UPRIGHT)
+        FACEOPT(FACING_UPLEFT, SUFFIX_UPLEFT)
+        FACEOPT(FACING_DOWNRIGHT, SUFFIX_DOWNRIGHT)
+        FACEOPT(FACING_DOWNLEFT, SUFFIX_DOWNLEFT)
+        FACEOPT(FACING_SIDE, SUFFIX_SIDE)
+        FACEOPT(FACING_UPSIDE, SUFFIX_UPSIDE)
+        FACEOPT(FACING_DOWNSIDE, SUFFIX_DOWNSIDE)
+        FACEOPT(FACING_45S, SUFFIX_45S)
+        FACEOPT(FACING_90S, SUFFIX_90S)
 
-			default:
-				break;
-		}
-	}
+    default:
+        break;
+    }
 }
+} // namespace Krane

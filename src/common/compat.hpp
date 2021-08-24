@@ -8,7 +8,7 @@
 #define KTOOLS_COMPAT_HPP
 
 #include "compat/common.hpp"
-#include "compat/posix.hpp"
 #include "compat/fs.hpp"
+#include "compat/posix.hpp"
 
 #endif

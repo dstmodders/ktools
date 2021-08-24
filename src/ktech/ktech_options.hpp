@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013  simplex
+Copyright (C) 2013 simplex
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -15,37 +15,36 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef KTECH_OPTIONS_HPP
 #define KTECH_OPTIONS_HPP
 
-#include "ktech_common.hpp"
 #include "file_abstraction.hpp"
+#include "ktech_common.hpp"
 
 namespace KTech {
-	namespace options {
-		extern int verbosity;
+namespace options {
+extern int verbosity;
 
-		extern bool info;
+extern bool info;
 
-		extern int image_quality;
+extern int image_quality;
 
-		extern MagickCore::FilterType filter;
+extern MagickCore::FilterType filter;
 
-		extern bool no_premultiply;
+extern bool no_premultiply;
 
-		extern bool no_mipmaps;
+extern bool no_mipmaps;
 
-		extern Maybe<size_t> width;
-		extern Maybe<size_t> height;
-		extern bool pow2;
+extern Maybe<size_t> width;
+extern Maybe<size_t> height;
+extern bool pow2;
 
-		extern bool force_square;
-		extern bool extend;
-		extern bool extend_left;
+extern bool force_square;
+extern bool extend;
+extern bool extend_left;
 
-		extern Maybe<VirtualPath> atlas_path;
-	}
-}
+extern Maybe<VirtualPath> atlas_path;
+} // namespace options
+} // namespace KTech
 
 #endif
