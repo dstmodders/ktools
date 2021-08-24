@@ -18,10 +18,10 @@ jobs:
           echo "GITHUB_JOB_NAME=build" >> $GITHUB_ENV
       - name: Install ImageMagick
         run: |
-          brew install imagemagick@6
+          brew install imagemagick
       - name: Build and install ktools
         run: |
-          export PKG_CONFIG_PATH="/usr/local/opt/imagemagick@6/lib/pkgconfig"
+          export PKG_CONFIG_PATH="/usr/local/opt/imagemagick/lib/pkgconfig"
           cmake \
             -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-config --variable=libname Magick++).dylib" \
             -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
