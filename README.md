@@ -271,7 +271,7 @@ $ sudo apt-get install build-essential cmake libpng-dev libreadline-dev libzip-d
 
 ```shell
 $ sudo apt-get install wget
-$ export IMAGEMAGICK_VERSION='6.9.12-19'
+$ export IMAGEMAGICK_VERSION='7.1.0-5'
 $ wget -P /tmp/ "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
 $ tar xf "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz" -C /tmp/
 $ cd /tmp/ImageMagick-${IMAGEMAGICK_VERSION}/
@@ -311,7 +311,7 @@ $ sudo make install
 If you have [Homebrew][] installed:
 
 ```shell
-$ brew install imagemagick@6
+$ brew install imagemagick
 ```
 
 Otherwise, download and build [ImageMagick][] manually. You may use
@@ -342,10 +342,6 @@ $ sudo make install
 ```
 
 ### Windows
-
-_Note for MinGW users_: [ImageMagick][] 6.8.9 was reported to not compile under
-MinGW. Version 6.8.8-10 was confirmed to work. You may also need to install (and
-likely compile) [libpng][] and [zlib][].
 
 Open [CMake][], select the `ktools` directory as the source folder ("Where is
 the source code") and whichever directory you'd like as the build folder ("Where
