@@ -1,8 +1,16 @@
 #!/usr/bin/env sh
 
-BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
-OUTPUT_DIR='./output'
-SRC_DIR='./src'
+readonly BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly OUTPUT_DIR='./output'
+readonly SRC_DIR='./src'
+
+readonly KRANE_OUTPUT_DIR="${OUTPUT_DIR}/chester"
+readonly KRANE_SRC_DIR="${SRC_DIR}/chester"
+readonly KTECH_SRC_FILENAME='minimap_atlas'
+readonly KTECH_SRC_PNG="${SRC_DIR}/${KTECH_SRC_FILENAME}.png"
+readonly KTECH_SRC_TEX="${SRC_DIR}/${KTECH_SRC_FILENAME}.tex"
+readonly KTECH_TRANSPARENCY_FILENAME='transparency_test'
+readonly KTECH_TRANSPARENCY_PNG="${SRC_DIR}/${KTECH_TRANSPARENCY_FILENAME}.png"
 
 print_title() {
   title="$1"
@@ -36,7 +44,7 @@ png_to_tex_filter() {
 png_from_generated_tex() {
   to="$1"
   name="$2"
-  ktech "${OUTPUT_DIR}/${name}.tex" "${to}/${name}.png"
+  ktech "${OUTPUT_DIR}/${name}.tex" "${to}/${name}.tex.png"
 }
 
 cd "${BASE_DIR}" || exit 1
@@ -46,31 +54,29 @@ rm -Rf "${OUTPUT_DIR}"
 mkdir "${OUTPUT_DIR}"
 
 # ktech
-src_png="${SRC_DIR}/minimap_atlas.png"
-src_tex="${SRC_DIR}/minimap_atlas.tex"
 printf 'Generating ktech output...'
 {
   # TEX => PNG
   printf 'TEX info:\n\n'
-  ktech --verbose --info ./src/minimap_atlas.tex
+  ktech --verbose --info "${KTECH_SRC_TEX}"
 
   print_title 'TEX => PNG (default)'
-  ktech --verbose ./src/minimap_atlas.tex "${OUTPUT_DIR}"
+  ktech --verbose "${KTECH_SRC_TEX}" "${OUTPUT_DIR}"
 
   print_title 'TEX => PNG (quality)'
   ktech \
     --verbose \
     --quality 10 \
-    "${src_tex}" \
-    "${OUTPUT_DIR}/minimap_atlas_quality-10.png"
+    "${KTECH_SRC_TEX}" \
+    "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_quality-10.png"
 
   print_title 'TEX => PNG (resize)'
   ktech \
     --verbose \
     --height 512 \
     --width 512 \
-    "${src_tex}" \
-    "${OUTPUT_DIR}/minimap_atlas_512x512.png"
+    "${KTECH_SRC_TEX}" \
+    "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_512x512.png"
 
   print_title 'TEX => PNG (extend)'
   ktech \
@@ -78,90 +84,106 @@ printf 'Generating ktech output...'
     --height 512 \
     --width 512 \
     --extend \
-    "${src_tex}" \
-    "${OUTPUT_DIR}/minimap_atlas_512x512_extend.png"
+    "${KTECH_SRC_TEX}" \
+    "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_512x512_extend.png"
 
   # PNG => TEX
   print_title 'PNG => TEX (default)'
-  ktech --verbose "${src_png}" "${OUTPUT_DIR}"
+  ktech --verbose "${KTECH_SRC_PNG}" "${OUTPUT_DIR}"
 
   print_title 'PNG => TEX (atlas)'
   ktech \
     --verbose \
-    --atlas "${OUTPUT_DIR}/minimap_atlas_atlas.xml" \
-    "${src_png}" \
-    "${OUTPUT_DIR}/minimap_atlas_atlas.tex"
+    --atlas "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.xml" \
+    "${KTECH_SRC_PNG}" \
+    "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.tex"
 
   # compression
-  png_to_tex_compression "${src_png}" 'dxt1'
-  png_to_tex_compression "${src_png}" 'dxt3'
-  png_to_tex_compression "${src_png}" 'dxt5'
-  png_to_tex_compression "${src_png}" 'rgb'
-  png_to_tex_compression "${src_png}" 'rgba'
+  png_to_tex_compression "${KTECH_SRC_PNG}" 'dxt1'
+  png_to_tex_compression "${KTECH_SRC_PNG}" 'dxt3'
+  png_to_tex_compression "${KTECH_SRC_PNG}" 'dxt5'
+  png_to_tex_compression "${KTECH_SRC_PNG}" 'rgb'
+  png_to_tex_compression "${KTECH_SRC_PNG}" 'rgba'
 
   # filter
-  png_to_tex_filter "${src_png}" 'bicubic'
-  png_to_tex_filter "${src_png}" 'box'
-  png_to_tex_filter "${src_png}" 'catrom'
-  png_to_tex_filter "${src_png}" 'cubic'
-  png_to_tex_filter "${src_png}" 'lanczos'
-  png_to_tex_filter "${src_png}" 'mitchell'
+  png_to_tex_filter "${KTECH_SRC_PNG}" 'bicubic'
+  png_to_tex_filter "${KTECH_SRC_PNG}" 'box'
+  png_to_tex_filter "${KTECH_SRC_PNG}" 'catrom'
+  png_to_tex_filter "${KTECH_SRC_PNG}" 'cubic'
+  png_to_tex_filter "${KTECH_SRC_PNG}" 'lanczos'
+  png_to_tex_filter "${KTECH_SRC_PNG}" 'mitchell'
+
+  # transparency test
+  print_title 'PNG => TEX (transparency test)'
+  ktech \
+    --verbose \
+    "${KTECH_TRANSPARENCY_PNG}" \
+    "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}.tex"
+
+  print_title 'PNG => TEX (transparency test with no-premultiply)'
+  ktech \
+    --verbose \
+    --no-premultiply \
+    "${KTECH_TRANSPARENCY_PNG}" \
+    "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}_no-premultiply.tex"
 } > "${OUTPUT_DIR}/log.txt" 2>&1
 printf ' Done\n'
 
 # krane
-src_anim_dir="${SRC_DIR}/chester"
-output_anim_dir="${OUTPUT_DIR}/chester"
 printf 'Generating krane output...'
 {
   print_title 'krane (default)'
-  krane --verbose "${src_anim_dir}" "${output_anim_dir}"
+  krane --verbose "${KRANE_SRC_DIR}" "${KRANE_OUTPUT_DIR}"
 
   print_title 'krane (mark-atlases)'
   krane \
     --verbose \
     --mark-atlases \
-    "${src_anim_dir}" \
-    "${output_anim_dir}_mark-atlases"
+    "${KRANE_SRC_DIR}" \
+    "${KRANE_OUTPUT_DIR}_mark-atlases"
 
   print_title 'krane (bank)'
   krane \
     --verbose \
     --bank chester \
-    "${src_anim_dir}" \
-    "${output_anim_dir}_bank"
+    "${KRANE_SRC_DIR}" \
+    "${KRANE_OUTPUT_DIR}_bank"
 
   print_title 'krane (rename)'
   krane \
     --verbose \
     --rename-bank chester_renamed \
     --rename-build chester_build_renamed \
-    "${src_anim_dir}" \
-    "${output_anim_dir}_rename"
+    "${KRANE_SRC_DIR}" \
+    "${KRANE_OUTPUT_DIR}_rename"
 } >> "${OUTPUT_DIR}/log.txt" 2>&1
 printf ' Done\n'
 
 # create PNGs from generated TEXs
-to="${OUTPUT_DIR}/png_from_generated_tex"
-mkdir "${to}"
 printf 'Generating PNGs from generated TEXs...'
 {
-  png_from_generated_tex "${to}" 'minimap_atlas'
-  png_from_generated_tex "${to}" 'minimap_atlas_atlas'
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_atlas"
 
   # compression
-  png_from_generated_tex "${to}" 'minimap_atlas_dxt1'
-  png_from_generated_tex "${to}" 'minimap_atlas_dxt3'
-  png_from_generated_tex "${to}" 'minimap_atlas_dxt5'
-  png_from_generated_tex "${to}" 'minimap_atlas_rgb'
-  png_from_generated_tex "${to}" 'minimap_atlas_rgba'
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt1"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt3"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt5"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_rgb"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_rgba"
 
   # filter
-  png_from_generated_tex "${to}" 'minimap_atlas_bicubic'
-  png_from_generated_tex "${to}" 'minimap_atlas_box'
-  png_from_generated_tex "${to}" 'minimap_atlas_catrom'
-  png_from_generated_tex "${to}" 'minimap_atlas_cubic'
-  png_from_generated_tex "${to}" 'minimap_atlas_lanczos'
-  png_from_generated_tex "${to}" 'minimap_atlas_mitchell'
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_bicubic"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_box"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_catrom"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_cubic"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_lanczos"
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_mitchell"
+
+  # transparency
+  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_TRANSPARENCY_FILENAME}"
+  png_from_generated_tex \
+    "${OUTPUT_DIR}" \
+    "${KTECH_TRANSPARENCY_FILENAME}_no-premultiply"
 } > /dev/null 2>&1
 printf ' Done\n'
