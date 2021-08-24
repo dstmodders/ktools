@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Enable `--no-premultiply` option
 - Improve code consistency
 - Migrate [ImageMagick][] from 6 to 7
 
