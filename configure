@@ -1,3 +1,104 @@
 #!/usr/bin/env sh
 
+get_platform() {
+  case "$(uname -s)" in
+    Linux*) printf 'linux';;
+    Darwin*) printf 'macos';;
+    CYGWIN*) printf 'cygwin';;
+    MINGW*) printf 'minigw';;
+    *) printf 'unknown';;
+  esac
+}
+
+error() {
+  err="$1"
+  printf "Error: %s\n" "${err}"
+  exit 1
+}
+
+is_installed() {
+  cmd="$1"
+  if command -v "${cmd}" > /dev/null; then
+    return 0
+  fi
+  return 1
+}
+
+get_imagemagick_version() {
+  magick identify --version | grep 'Version' | awk '{ print $3 }'
+}
+
+get_imagemagick_version_major() {
+  get_imagemagick_version | awk -F '.' '{ print $1 }'
+}
+
+print_cmake_example() {
+  lib_dir="$1"
+  include_dir="$2"
+  ext="$3"
+  printf "cmake \\
+  -DCMAKE_BUILD_TYPE=Release \\
+  -DImageMagick_Magick++_LIBRARY='%s/libMagick++-7.Q16HDRI.%s' \\
+  -DImageMagick_MagickCore_INCLUDE_DIR='%s/ImageMagick-7' \\
+  -DImageMagick_MagickCore_LIBRARY='%s/libMagickCore-7.Q16HDRI.%s' \\
+  -DImageMagick_MagickWand_INCLUDE_DIR='%s/ImageMagick-7' \\
+  -DImageMagick_MagickWand_LIBRARY='%s/libMagickWand-7.Q16HDRI.%s' \\
+.\n" \
+  "${lib_dir}" "${ext}" \
+  "${include_dir}" \
+  "${lib_dir}" "${ext}" \
+  "${include_dir}" \
+  "${lib_dir}" "${ext}"
+}
+
+PLATFORM="$(get_platform)"
+readonly PLATFORM
+
+if [ "${PLATFORM}" = "unknown" ]; then
+  error 'unsupported platform'
+fi
+
+if ! is_installed 'magick'; then
+  error 'ImageMagick is not installed'
+fi
+
+if ! is_installed 'cmake'; then
+  error 'CMake is not installed'
+fi
+
+if ! [ "$(get_imagemagick_version_major)" = '7' ]; then
+  error "unsupported ImageMagick version ($(get_imagemagick_version))"
+fi
+
+LIB_EXT='so'
+if [ "${PLATFORM}" = "macos" ]; then
+  LIB_EXT='dylib'
+fi
+readonly LIB_EXT
+
+if [ "${PLATFORM}" = "linux" ] || [ "${PLATFORM}" = "macos" ]; then
+  if is_installed 'pkg-config'; then
+    exec cmake -DCMAKE_BUILD_TYPE=Release \
+      -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-config --variable=libname Magick++).${LIB_EXT}" \
+      -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
+      -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-config --variable=libname MagickCore).${LIB_EXT}" \
+      -DImageMagick_MagickWand_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickWand | tail -c+3)" \
+      -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-config --variable=libname MagickWand).${LIB_EXT}" \
+    .
+    exit 0
+  else
+    printf 'Warning: pkg-config is not available. You may need to manually specify the ImageMagick 7 location.\n\n'
+
+    if [ "${PLATFORM}" = "linux" ]; then
+      printf "Example for Linux:\n\n"
+      print_cmake_example '/usr/local/lib' '/usr/local/include' "${LIB_EXT}"
+      printf '\n'
+    elif [ "${PLATFORM}" = "macos" ]; then
+      printf "Example for macOS (when installed using Homebrew):\n\n"
+      print_cmake_example '/usr/local/Cellar/imagemagick/7.1.0-5/lib' '/usr/local/Cellar/imagemagick/7.1.0-5/include' "${LIB_EXT}"
+      printf '\n'
+    fi
+  fi
+fi
+
 exec cmake -DCMAKE_BUILD_TYPE=Release .
