@@ -3,7 +3,7 @@
 cmake-build-*/
 
 ### Project ###
-*.cbp
+# general
 CMakeCache.txt
 CMakeFiles/
 Testing/
@@ -19,6 +19,22 @@ krane
 ktech
 !src/ktech/
 
+# linux/macos
+*.cbp
+
+# windows
+*.dir/
+*.lib
+*.sln
+*.user
+*.vcxproj
+*.vcxproj.filters
+*.vs/
+Debug/
+Release/
+x64/
+
+# other
 **/Makefile
 build/**
 deps/**
