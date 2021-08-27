@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+## [4.5.0][] - 2021-08-27
+
 ### Changed
 
 - Enable `--no-premultiply` option
@@ -41,7 +43,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 First release.
 
-[unreleased]: https://github.com/victorpopkov/ktools/compare/v4.4.1...HEAD
+[unreleased]: https://github.com/victorpopkov/ktools/compare/v4.5.0...HEAD
+[4.5.0]: https://github.com/victorpopkov/ktools/compare/v4.4.1...v4.5.0
 [4.4.1]: https://github.com/victorpopkov/ktools/compare/4.4.0...v4.4.1
 [4.4.0]: https://github.com/victorpopkov/ktools/compare/4.3.1...4.4.0
 [4.3.1]: https://github.com/victorpopkov/ktools/compare/4.3.0...4.3.1
