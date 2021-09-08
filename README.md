@@ -1,7 +1,6 @@
 # ktools
 
-[![Debian Size](https://img.shields.io/docker/image-size/viktorpopkov/ktools/debian?label=debian%20size)](https://hub.docker.com/r/viktorpopkov/ktools)
-[![Alpine Size](https://img.shields.io/docker/image-size/viktorpopkov/ktools/alpine?label=alpine%20size)](https://hub.docker.com/r/viktorpopkov/ktools)
+[![Docker Pulls](https://img.shields.io/docker/pulls/viktorpopkov/ktools)](https://hub.docker.com/r/viktorpopkov/ktools)
 [![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/CI?label=CI)](https://github.com/victorpopkov/ktools/actions/workflows/ci.yml)
 [![Linux](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=Linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
 [![macOS](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macOS)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
