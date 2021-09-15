@@ -1,9 +1,9 @@
 # ktools
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/viktorpopkov/ktools)](https://hub.docker.com/r/viktorpopkov/ktools)
-[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/CI?label=CI)](https://github.com/victorpopkov/ktools/actions/workflows/ci.yml)
-[![Linux](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=Linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
-[![macOS](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macOS)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
+[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/CI?label=ci)](https://github.com/victorpopkov/ktools/actions/workflows/ci.yml)
+[![Linux](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
+[![macOS](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macos)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
 
 > As I do sometimes develop mods for this game, I'm still dependent on this
 > project. However, the original one seems to be abandoned (the last commit was
