@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [4.5.1][] - 2021-09-15
 
-### Changed
+### Fixed
 
-- Replace alpha composite with black in the common image operations
+- Fix issues with alpha channel
 
 ## [4.5.0][] - 2021-08-27
 
