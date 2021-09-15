@@ -410,7 +410,7 @@ class cleanNoise : public image_operation_t {
         alpha.reduceNoise(1.6);
 
         img.alpha(false);
-        img.composite(alpha, 0, 0, CopyAlphaCompositeOp);
+        img.composite(alpha, 0, 0, CopyBlackCompositeOp);
 
         img.alpha(true);
     }
