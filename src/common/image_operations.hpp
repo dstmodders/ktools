@@ -404,14 +404,11 @@ class cleanNoise : public image_operation_t {
         img.despeckle();
 
         Image alpha = img;
-        alpha.channel(AlphaChannel);
-        alpha.negate();
-
-        alpha.reduceNoise(1.6);
+        alpha.channel(MagickCore::AlphaChannel);
+        alpha.reduceNoise(static_cast<size_t>(1.6));
 
         img.alpha(false);
-        img.composite(alpha, 0, 0, CopyBlackCompositeOp);
-
+        img.composite(alpha, 0, 0, MagickCore::CopyAlphaCompositeOp);
         img.alpha(true);
     }
 };
