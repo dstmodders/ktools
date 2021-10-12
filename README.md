@@ -1,9 +1,9 @@
 # ktools
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/viktorpopkov/ktools)](https://hub.docker.com/r/viktorpopkov/ktools)
-[![CI](https://img.shields.io/github/workflow/status/victorpopkov/ktools/CI?label=ci)](https://github.com/victorpopkov/ktools/actions/workflows/ci.yml)
-[![Linux](https://img.shields.io/github/workflow/status/victorpopkov/ktools/Linux?label=linux)](https://github.com/victorpopkov/ktools/actions/workflows/linux.yml)
-[![macOS](https://img.shields.io/github/workflow/status/victorpopkov/ktools/macOS?label=macos)](https://github.com/victorpopkov/ktools/actions/workflows/macos.yml)
+[![Docker Pulls](https://img.shields.io/docker/pulls/dstmodders/ktools)](https://hub.docker.com/r/dstmodders/ktools)
+[![CI](https://img.shields.io/github/workflow/status/dstmodders/ktools/CI?label=ci)](https://github.com/dstmodders/ktools/actions/workflows/ci.yml)
+[![Linux](https://img.shields.io/github/workflow/status/dstmodders/ktools/Linux?label=linux)](https://github.com/dstmodders/ktools/actions/workflows/linux.yml)
+[![macOS](https://img.shields.io/github/workflow/status/dstmodders/ktools/macOS?label=macos)](https://github.com/dstmodders/ktools/actions/workflows/macos.yml)
 
 > As I do sometimes develop mods for this game, I'm still dependent on this
 > project. However, the original one seems to be abandoned (the last commit was
@@ -239,16 +239,16 @@ not be given as arguments.
 ## Docker
 
 If you are familiar with [Docker][] you can use the corresponding [Docker Hub][]
-images: https://hub.docker.com/r/viktorpopkov/ktools
+images: https://hub.docker.com/r/dstmodders/ktools
 
 ```shell
 $ cd <your data directory>
-$ docker pull viktorpopkov/ktools
-$ docker run --rm -v "$(pwd):/data/" viktorpopkov/ktools ktech --version
+$ docker pull dstmodders/ktools
+$ docker run --rm -v "$(pwd):/data/" dstmodders/ktools ktech --version
 ```
 
 To learn more, consider checking out the
-following [Usage](https://github.com/victorpopkov/docker-ktools#usage) section.
+following [Usage](https://github.com/dstmodders/docker-ktools#usage) section.
 
 ## INSTALLATION FROM SOURCE
 
@@ -374,6 +374,6 @@ See `NOTICE.txt`.
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
 [libzip]: https://libzip.org/
-[releases]: https://github.com/victorpopkov/ktools/releases
+[releases]: https://github.com/dstmodders/ktools/releases
 [spriter]: https://brashmonkey.com/spriter-pro/
 [zlib]: https://zlib.net/

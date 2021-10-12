@@ -49,12 +49,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 First release.
 
-[unreleased]: https://github.com/victorpopkov/ktools/compare/v4.5.1...HEAD
-[4.5.1]: https://github.com/victorpopkov/ktools/compare/v4.5.0...v4.5.1
-[4.5.0]: https://github.com/victorpopkov/ktools/compare/v4.4.1...v4.5.0
-[4.4.1]: https://github.com/victorpopkov/ktools/compare/4.4.0...v4.4.1
-[4.4.0]: https://github.com/victorpopkov/ktools/compare/4.3.1...4.4.0
-[4.3.1]: https://github.com/victorpopkov/ktools/compare/4.3.0...4.3.1
+[unreleased]: https://github.com/dstmodders/ktools/compare/v4.5.1...HEAD
+[4.5.1]: https://github.com/dstmodders/ktools/compare/v4.5.0...v4.5.1
+[4.5.0]: https://github.com/dstmodders/ktools/compare/v4.4.1...v4.5.0
+[4.4.1]: https://github.com/dstmodders/ktools/compare/4.4.0...v4.4.1
+[4.4.0]: https://github.com/dstmodders/ktools/compare/4.3.1...4.4.0
+[4.3.1]: https://github.com/dstmodders/ktools/compare/4.3.0...4.3.1
 [eslint]: https://eslint.org/
 [github actions]: https://github.com/features/actions
 [github]: https://github.com/
