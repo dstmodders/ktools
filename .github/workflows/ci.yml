@@ -31,12 +31,12 @@ jobs:
         id: lint
         run: ./bin/lint.sh
       - name: Prepare success Slack notification
-        if: success()
+        if: ${{ success() }}
         run: echo "SLACK_CUSTOM_PAYLOAD=${SLACK_CUSTOM_PAYLOAD}" >> $GITHUB_ENV
         env:
           SLACK_CUSTOM_PAYLOAD: '{"channel":"${{ secrets.SLACK_CHANNEL }}","attachments":[{"color":"{{ SLACK_COLOR_SUCCESS }}","fallback":"GitHub Actions {{ GITHUB_WORKFLOW }} / {{ GITHUB_JOB_NAME }} job of {{ GITHUB_REPOSITORY }}@{{ BRANCH_NAME }} by {{ GITHUB_ACTOR }} has passed","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"GitHub Actions <https://github.com/{{ GITHUB_REPOSITORY }}/actions/runs/{{ GITHUB_RUN_ID }}|{{ GITHUB_WORKFLOW }} / {{ GITHUB_JOB_NAME }}> job of <https://github.com/{{ GITHUB_REPOSITORY }}|{{ GITHUB_REPOSITORY }}>@<https://github.com/{{ GITHUB_REPOSITORY }}/tree/{{ BRANCH_NAME }}|{{ BRANCH_NAME }}> by <https://github.com/{{ GITHUB_ACTOR }}|{{ GITHUB_ACTOR }}> has passed"}}]}]}'
       - name: Prepare failure Slack notification
-        if: failure()
+        if: ${{ failure() }}
         run: echo "SLACK_CUSTOM_PAYLOAD=${SLACK_CUSTOM_PAYLOAD}" >> $GITHUB_ENV
         env:
           SLACK_CUSTOM_PAYLOAD: '{"channel":"${{ secrets.SLACK_CHANNEL }}","attachments":[{"color":"{{ SLACK_COLOR_FAILURE }}","fallback":"GitHub Actions {{ GITHUB_WORKFLOW }} / {{ GITHUB_JOB_NAME }} job of {{ GITHUB_REPOSITORY }}@{{ BRANCH_NAME }} by {{ GITHUB_ACTOR }} has failed","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"GitHub Actions <https://github.com/{{ GITHUB_REPOSITORY }}/actions/runs/{{ GITHUB_RUN_ID }}|{{ GITHUB_WORKFLOW }} / {{ GITHUB_JOB_NAME }}> job of <https://github.com/{{ GITHUB_REPOSITORY }}|{{ GITHUB_REPOSITORY }}>@<https://github.com/{{ GITHUB_REPOSITORY }}/tree/{{ BRANCH_NAME }}|{{ BRANCH_NAME }}> by <https://github.com/{{ GITHUB_ACTOR }}|{{ GITHUB_ACTOR }}> has failed"}}]}]}'
