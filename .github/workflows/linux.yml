@@ -46,7 +46,7 @@ jobs:
           make install
           ldconfig /usr/local/lib/
         env:
-          IMAGEMAGICK_VERSION: 7.1.0-13
+          IMAGEMAGICK_VERSION: 7.1.0-37
       - name: Build and install ktools
         run: |
           cmake \
