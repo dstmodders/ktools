@@ -38,7 +38,7 @@ jobs:
             wget
       - name: Install ImageMagick
         run: |
-          wget -P /tmp/ "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+          wget -P /tmp/ "https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
           tar xf "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz" -C /tmp/
           cd /tmp/ImageMagick-${IMAGEMAGICK_VERSION}/
           ./configure
