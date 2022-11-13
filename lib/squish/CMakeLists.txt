@@ -7,7 +7,7 @@
 
 project(squish)
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.12)
 
 if(CMAKE_GENERATOR STREQUAL "Xcode")
   set(CMAKE_OSX_ARCHITECTURES "i386;ppc")
