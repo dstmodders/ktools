@@ -78,6 +78,16 @@ readonly LIB_EXT
 
 if [ "${PLATFORM}" = "linux" ] || [ "${PLATFORM}" = "macos" ]; then
   if is_installed 'pkg-config'; then
+    mpp_dir="$(pkg-config --variable=libdir Magick++)"
+    mc_dir="$(pkg-config --variable=libdir MagickCore)"
+    mw_dir="$(pkg-config --variable=libdir MagickWand)"
+
+    if [ -z "${mpp_dir}" ] || [ -z "${mc_dir}" ] || [ -z "${mw_dir}" ]; then
+      if [ -d "/usr/local/lib/pkgconfig" ]; then
+        export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}"
+      fi
+    fi
+
     exec cmake -DCMAKE_BUILD_TYPE=Release \
       -DImageMagick_Magick++_LIBRARY="$(pkg-config --variable=libdir Magick++)/lib$(pkg-config --variable=libname Magick++).${LIB_EXT}" \
       -DImageMagick_MagickCore_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickCore | tail -c+3)" \
