@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-readonly BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+readonly BASE_DIR
+
 readonly OUTPUT_DIR='./output'
 readonly SRC_DIR='./src'
 
@@ -11,6 +13,20 @@ readonly KTECH_SRC_PNG="${SRC_DIR}/${KTECH_SRC_FILENAME}.png"
 readonly KTECH_SRC_TEX="${SRC_DIR}/${KTECH_SRC_FILENAME}.tex"
 readonly KTECH_TRANSPARENCY_FILENAME='transparency_test'
 readonly KTECH_TRANSPARENCY_PNG="${SRC_DIR}/${KTECH_TRANSPARENCY_FILENAME}.png"
+
+error() {
+  err="$1"
+  printf "Error: %s\n" "${err}" >&2
+  exit 1
+}
+
+is_installed() {
+  cmd="$1"
+  if command -v "${cmd}" > /dev/null; then
+    return 0
+  fi
+  return 1
+}
 
 print_title() {
   title="$1"
@@ -48,6 +64,14 @@ png_from_generated_tex() {
 }
 
 cd "${BASE_DIR}" || exit 1
+
+if ! is_installed 'krane'; then
+  error 'krane is not installed'
+fi
+
+if ! is_installed 'ktech'; then
+  error 'ktech is not installed'
+fi
 
 # prepare
 rm -Rf "${OUTPUT_DIR}"
