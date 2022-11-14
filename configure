@@ -12,7 +12,7 @@ get_platform() {
 
 error() {
   err="$1"
-  printf "Error: %s\n" "${err}"
+  printf "Error: %s\n" "${err}" >&2
   exit 1
 }
 
