@@ -289,3 +289,5 @@ add_custom_target(
     cmake_uninstall.cmake -o -name Makefile -o -name '*.cbp' -o -name Testing
     '\)' -exec rm -rf {} '\;' 2> /dev/null
   COMMAND rm -rf build/*)
+add_custom_target(test COMMAND ./test/test.sh)
+add_custom_target(testclean COMMAND rm -rf ./test/output/)
