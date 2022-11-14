@@ -284,6 +284,8 @@ add_custom_target(
   distclean
   COMMAND rm -rf CMakeCache.txt CPackConfig.cmake CPackSourceConfig.cmake
           config.h
-  COMMAND -find . '\(' -name CMakeFiles -o -name cmake_install.cmake -o -name
-          Makefile '\)' -exec rm -rf {} '\;'
+  COMMAND
+    -find . '\(' -name CMakeFiles -o -name cmake_install.cmake -o -name
+    cmake_uninstall.cmake -o -name Makefile -o -name '*.cbp' -o -name Testing
+    '\)' -exec rm -rf {} '\;' 2> /dev/null
   COMMAND rm -rf build/*)
