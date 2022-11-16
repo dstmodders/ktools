@@ -1,10 +1,13 @@
+// -*- Mode: c++; c-basic-offset: 4; tab-width: 4; -*-
+
 /******************************************************************************
  *
  *  file:  ValueArg.h
  *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno.
- *  All rights reverved.
+ *  Copyright (c) 2017, Google LLC
+ *  All rights reserved.
  *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
@@ -198,7 +201,17 @@ template <class T> class ValueArg : public Arg {
     /**
      * Returns the value of the argument.
      */
-    T &getValue();
+    const T &getValue() const { return _value; }
+
+    // TODO(macbishop): Non-const variant is deprecated, don't
+    // use. Remove in next major.
+    T &getValue() { return _value; }
+
+    /**
+     * A ValueArg can be used as as its value type (T) This is the
+     * same as calling getValue()
+     */
+    operator const T &() const { return getValue(); }
 
     /**
      * Specialization of shortID.
@@ -218,8 +231,8 @@ template <class T> class ValueArg : public Arg {
     /**
      * Prevent accidental copying
      */
-    ValueArg<T>(const ValueArg<T> &rhs);
-    ValueArg<T> &operator=(const ValueArg<T> &rhs);
+    ValueArg(const ValueArg<T> &rhs);
+    ValueArg &operator=(const ValueArg<T> &rhs);
 };
 
 /**
@@ -247,7 +260,7 @@ ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
                       const std::string &desc, bool req, T val,
                       Constraint<T> *constraint, Visitor *v)
     : Arg(flag, name, desc, req, true, v), _value(val), _default(val),
-      _typeDesc(constraint->shortID()), _constraint(constraint) {}
+      _typeDesc(Constraint<T>::shortID(constraint)), _constraint(constraint) {}
 
 template <class T>
 ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
@@ -255,14 +268,12 @@ ValueArg<T>::ValueArg(const std::string &flag, const std::string &name,
                       Constraint<T> *constraint, CmdLineInterface &parser,
                       Visitor *v)
     : Arg(flag, name, desc, req, true, v), _value(val), _default(val),
-      _typeDesc(constraint->shortID()), _constraint(constraint) {
+      _typeDesc(
+          Constraint<T>::shortID(constraint)), // TODO(macbishop): Will crash
+      // if constraint is NULL
+      _constraint(constraint) {
     parser.add(this);
 }
-
-/**
- * Implementation of getValue().
- */
-template <class T> T &ValueArg<T>::getValue() { return _value; }
 
 /**
  * Implementation of processArg().
@@ -283,8 +294,9 @@ bool ValueArg<T>::processArg(int *i, std::vector<std::string> &args) {
     if (argMatches(flag)) {
         if (_alreadySet) {
             if (_xorSet)
-                throw(CmdLineParseException(
-                    "Mutually exclusive argument already set!", toString()));
+                throw(CmdLineParseException("Mutually exclusive argument"
+                                            " already set!",
+                                            toString()));
             else
                 throw(
                     CmdLineParseException("Argument already set!", toString()));

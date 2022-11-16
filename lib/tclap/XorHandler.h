@@ -1,3 +1,4 @@
+// -*- Mode: c++; c-basic-offset: 4; tab-width: 4; -*-
 
 /******************************************************************************
  *
@@ -5,7 +6,7 @@
  *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno.
- *  All rights reverved.
+ *  All rights reserved.
  *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
@@ -49,10 +50,10 @@ class XorHandler {
     XorHandler() : _orList(std::vector<std::vector<Arg *> >()) {}
 
     /**
-     * Add a list of Arg*'s that will be orred together.
+     * Add a list of Arg*'s that will be xor'd together.
      * \param ors - list of Arg* that will be xor'd.
      */
-    void add(std::vector<Arg *> &ors);
+    void add(const std::vector<Arg *> &ors);
 
     /**
      * Checks whether the specified Arg is in one of the xor lists and
@@ -81,13 +82,15 @@ class XorHandler {
      */
     bool contains(const Arg *a);
 
-    std::vector<std::vector<Arg *> > &getXorList();
+    const std::vector<std::vector<Arg *> > &getXorList() const;
 };
 
 //////////////////////////////////////////////////////////////////////
 // BEGIN XOR.cpp
 //////////////////////////////////////////////////////////////////////
-inline void XorHandler::add(std::vector<Arg *> &ors) { _orList.push_back(ors); }
+inline void XorHandler::add(const std::vector<Arg *> &ors) {
+    _orList.push_back(ors);
+}
 
 inline int XorHandler::check(const Arg *a) {
     // iterate over each XOR list
@@ -135,7 +138,7 @@ inline bool XorHandler::contains(const Arg *a) {
     return false;
 }
 
-inline std::vector<std::vector<Arg *> > &XorHandler::getXorList() {
+inline const std::vector<std::vector<Arg *> > &XorHandler::getXorList() const {
     return _orList;
 }
 

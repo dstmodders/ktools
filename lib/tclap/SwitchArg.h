@@ -1,3 +1,4 @@
+// -*- Mode: c++; c-basic-offset: 4; tab-width: 4; -*-
 
 /******************************************************************************
  *
@@ -5,7 +6,8 @@
  *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno.
- *  All rights reverved.
+ *  Copyright (c) 2017, Google LLC
+ *  All rights reserved.
  *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
@@ -100,7 +102,14 @@ class SwitchArg : public Arg {
     /**
      * Returns bool, whether or not the switch has been set.
      */
-    bool getValue();
+    bool getValue() const { return _value; }
+
+    /**
+     * A SwitchArg can be used as a boolean, indicating
+     * whether or not the switch has been set. This is the
+     * same as calling getValue()
+     */
+    operator bool() const { return _value; }
 
     virtual void reset();
 
@@ -133,8 +142,6 @@ inline SwitchArg::SwitchArg(const std::string &flag, const std::string &name,
       _default(default_val) {
     parser.add(this);
 }
-
-inline bool SwitchArg::getValue() { return _value; }
 
 inline bool SwitchArg::lastCombined(std::string &combinedSwitches) {
     for (unsigned int i = 1; i < combinedSwitches.length(); i++)

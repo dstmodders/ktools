@@ -6,7 +6,7 @@
  *
  *  Copyright (c) 2003, Michael E. Smoot .
  *  Copyright (c) 2004, Michael E. Smoot, Daniel Aarno.
- *  All rights reverved.
+ *  All rights reserved.
  *
  *  See the file COPYING in the top directory of this distribution for
  *  more information.
@@ -112,7 +112,7 @@ class CmdLine : public CmdLineInterface {
 
     /**
      * A list of Visitors to be explicitly deleted when the destructor
-     * is called.  At the moment, these are the Vistors created for the
+     * is called.  At the moment, these are the Visitors created for the
      * default Args.
      */
     std::list<Visitor *> _visitorDeleteOnExitList;
@@ -174,6 +174,11 @@ class CmdLine : public CmdLineInterface {
      */
     bool _helpAndVersion;
 
+    /**
+     * Whether or not to ignore unmatched args.
+     */
+    bool _ignoreUnmatched;
+
   public:
     /**
      * Command line constructor. Defines how the arguments will be
@@ -220,7 +225,7 @@ class CmdLine : public CmdLineInterface {
      * add does not need to be called.
      * \param xors - List of Args to be added and xor'd.
      */
-    void xorAdd(std::vector<Arg *> &xors);
+    void xorAdd(const std::vector<Arg *> &xors);
 
     /**
      * Parses the command line.
@@ -300,6 +305,14 @@ class CmdLine : public CmdLineInterface {
      * Allows the CmdLine object to be reused.
      */
     void reset();
+
+    /**
+     * Allows unmatched args to be ignored. By default false.
+     *
+     * @param ignore If true the cmdline will ignore any unmatched args
+     * and if false it will behave as normal.
+     */
+    void ignoreUnmatched(const bool ignore);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -312,7 +325,8 @@ inline CmdLine::CmdLine(const std::string &m, char delim, const std::string &v,
       _version(v), _numRequired(0), _delimiter(delim),
       _xorHandler(XorHandler()), _argDeleteOnExitList(std::list<Arg *>()),
       _visitorDeleteOnExitList(std::list<Visitor *>()), _output(0),
-      _handleExceptions(true), _userSetOutput(false), _helpAndVersion(help) {
+      _handleExceptions(true), _userSetOutput(false), _helpAndVersion(help),
+      _ignoreUnmatched(false) {
     _constructor();
 }
 
@@ -359,7 +373,7 @@ inline void CmdLine::_constructor() {
     deleteOnExit(v);
 }
 
-inline void CmdLine::xorAdd(std::vector<Arg *> &ors) {
+inline void CmdLine::xorAdd(const std::vector<Arg *> &ors) {
     _xorHandler.add(ors);
 
     for (ArgVectorIterator it = ors.begin(); it != ors.end(); it++) {
@@ -403,8 +417,14 @@ inline void CmdLine::parse(int argc, const char *const *argv) {
 inline void CmdLine::parse(std::vector<std::string> &args) {
     bool shouldExit = false;
     int estat = 0;
-
     try {
+        if (args.empty()) {
+            // https://sourceforge.net/p/tclap/bugs/30/
+            throw CmdLineParseException("The args vector must not be empty, "
+                                        "the first entry should contain the "
+                                        "program's name.");
+        }
+
         _progName = args.front();
         args.erase(args.begin());
 
@@ -426,7 +446,7 @@ inline void CmdLine::parse(std::vector<std::string> &args) {
             if (!matched && _emptyCombined(args[i]))
                 matched = true;
 
-            if (!matched && !Arg::ignoreRest())
+            if (!matched && !Arg::ignoreRest() && !_ignoreUnmatched)
                 throw(CmdLineParseException("Couldn't find match "
                                             "for argument",
                                             args[i]));
@@ -541,6 +561,10 @@ inline void CmdLine::reset() {
         (*it)->reset();
 
     _progName.clear();
+}
+
+inline void CmdLine::ignoreUnmatched(const bool ignore) {
+    _ignoreUnmatched = ignore;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
