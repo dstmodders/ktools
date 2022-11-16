@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased][]
 
+### Changed
+
+- Bump [Boost.Endian][] library from 1.54.0 to 1.55.0
+- Bump [TCLAP][] library from 1.2.1 to 1.2.5
+- Bump [pugixml][] library from 1.4 to 1.13
+- Improve code consistency
+
+### Fixed
+
+- Fix big-endian and little-endian detection for some architectures
+
 ## [4.5.1][] - 2021-09-15
 
 ### Fixed
@@ -55,12 +66,15 @@ First release.
 [4.4.1]: https://github.com/dstmodders/ktools/compare/4.4.0...v4.4.1
 [4.4.0]: https://github.com/dstmodders/ktools/compare/4.3.1...4.4.0
 [4.3.1]: https://github.com/dstmodders/ktools/compare/4.3.0...4.3.1
+[boost.endian]: https://www.boost.org/
 [eslint]: https://eslint.org/
 [github actions]: https://github.com/features/actions
 [github]: https://github.com/
 [imagemagick]: https://imagemagick.org/index.php
 [prettier]: https://prettier.io/
+[pugixml]: https://pugixml.org/
 [remark]: https://remark.js.org/
 [stylelint]: https://stylelint.io/
+[tclap]: https://tclap.sourceforge.net/
 [travis ci]: https://travis-ci.org/
 [webpack]: https://webpack.js.org/
