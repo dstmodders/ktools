@@ -1,5 +1,5 @@
 /*
-Copyright Redshift Software Inc. 2011-2013
+Copyright Rene Rivera 2011-2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at
 http://www.boost.org/LICENSE_1_0.txt)
@@ -52,9 +52,6 @@ the defined versions are:
 
 #define BOOST_LANG_STDCPP_NAME "Standard C++"
 
-#include <boost/predef/detail/test.h>
-BOOST_PREDEF_DECLARE_TEST(BOOST_LANG_STDCPP, BOOST_LANG_STDCPP_NAME)
-
 /*`
 [heading `BOOST_LANG_STDCPPCLI`]
 
@@ -88,9 +85,6 @@ date.
 
 #define BOOST_LANG_STDCPPCLI_NAME "Standard C++/CLI"
 
-#include <boost/predef/detail/test.h>
-BOOST_PREDEF_DECLARE_TEST(BOOST_LANG_STDCPPCLI, BOOST_LANG_STDCPPCLI_NAME)
-
 /*`
 [heading `BOOST_LANG_STDECPP`]
 
@@ -116,7 +110,13 @@ BOOST_PREDEF_DECLARE_TEST(BOOST_LANG_STDCPPCLI, BOOST_LANG_STDCPPCLI_NAME)
 
 #define BOOST_LANG_STDECPP_NAME "Standard Embedded C++"
 
+#endif
+
+#include <boost/predef/detail/test.h>
+BOOST_PREDEF_DECLARE_TEST(BOOST_LANG_STDCPP, BOOST_LANG_STDCPP_NAME)
+
+#include <boost/predef/detail/test.h>
+BOOST_PREDEF_DECLARE_TEST(BOOST_LANG_STDCPPCLI, BOOST_LANG_STDCPPCLI_NAME)
+
 #include <boost/predef/detail/test.h>
 BOOST_PREDEF_DECLARE_TEST(BOOST_LANG_STDECPP, BOOST_LANG_STDECPP_NAME)
-
-#endif
