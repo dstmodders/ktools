@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "metaprogramming.hpp"
 
 #include <algorithm>
-#include <boost/detail/endian.hpp>
+#include <boost/predef/other/endian.h>
 
 namespace KTools {
 class BinIOHelper {
@@ -37,10 +37,10 @@ class BinIOHelper {
         ktools_UNKNOWN_ENDIAN
     };
 
-#if defined(BOOST_LITTLE_ENDIAN)
+#if defined(BOOST_ENDIAN_LITTLE_BYTE)
     static const Endianess ktools_NATIVE_ENDIANNESS = ktools_LITTLE_ENDIAN;
     static const Endianess ktools_INVERSE_NATIVE_ENDIANNESS = ktools_BIG_ENDIAN;
-#elif defined(BOOST_BIG_ENDIAN)
+#elif defined(BOOST_ENDIAN_BIG_BYTE)
     static const Endianess ktools_NATIVE_ENDIANNESS = ktools_BIG_ENDIAN;
     static const Endianess ktools_INVERSE_NATIVE_ENDIANNESS =
         ktools_LITTLE_ENDIAN;
