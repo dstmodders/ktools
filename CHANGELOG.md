@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Bump [Boost.Endian][] library from 1.54.0 to 1.55.0
+- Bump [Boost.Endian][] library from 1.54.0 to 1.80.0
 - Bump [TCLAP][] library from 1.2.1 to 1.2.5
 - Bump [pugixml][] library from 1.4 to 1.13
 - Improve code consistency
