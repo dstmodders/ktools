@@ -10,22 +10,24 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/predef/os/bsd.h>
 
-/*`
-[heading `BOOST_OS_BSD_DRAGONFLY`]
+/* tag::reference[]
+= `BOOST_OS_BSD_DRAGONFLY`
 
-[@http://en.wikipedia.org/wiki/DragonFly_BSD DragonFly BSD] operating system.
+http://en.wikipedia.org/wiki/DragonFly_BSD[DragonFly BSD] operating system.
 
-[table
-    [[__predef_symbol__] [__predef_version__]]
+[options="header"]
+|===
+| {predef_symbol} | {predef_version}
 
-    [[`__DragonFly__`] [__predef_detection__]]
-    ]
- */
+| `+__DragonFly__+` | {predef_detection}
+|===
+*/ // end::reference[]
 
 #define BOOST_OS_BSD_DRAGONFLY BOOST_VERSION_NUMBER_NOT_AVAILABLE
 
 #if !defined(BOOST_PREDEF_DETAIL_OS_DETECTED) && (defined(__DragonFly__))
 #ifndef BOOST_OS_BSD_AVAILABLE
+#undef BOOST_OS_BSD
 #define BOOST_OS_BSD BOOST_VERSION_NUMBER_AVAILABLE
 #define BOOST_OS_BSD_AVAILABLE
 #endif
