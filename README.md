@@ -271,7 +271,7 @@ $ sudo apt-get install build-essential cmake libpng-dev libreadline-dev libzip-d
 
 ```shell
 $ sudo apt-get install wget
-$ export IMAGEMAGICK_VERSION='7.1.0-37'
+$ export IMAGEMAGICK_VERSION='7.1.0-52'
 $ wget -P /tmp/ "https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
 $ tar xf "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz" -C /tmp/
 $ cd /tmp/ImageMagick-${IMAGEMAGICK_VERSION}/
