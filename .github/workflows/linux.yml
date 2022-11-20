@@ -66,7 +66,7 @@ jobs:
       - name: Test
         run: ./test/test.sh
       - name: Upload test output
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-test-output
           path: test/output/
