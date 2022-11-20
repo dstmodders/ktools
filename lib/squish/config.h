@@ -4,7 +4,7 @@
 
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
-    "Software"), to	deal in the Software without restriction, including
+    "Software"), to deal in the Software without restriction, including
     without limitation the rights to use, copy, modify, merge, publish,
     distribute, sublicense, and/or sell copies of the Software, and to
     permit persons to whom the Software is furnished to do so, subject to
@@ -36,7 +36,7 @@
 #define SQUISH_USE_SSE 0
 #endif
 
-// Internally et SQUISH_USE_SIMD when either Altivec or SSE is available.
+// Internally set SQUISH_USE_SIMD when either Altivec or SSE is available.
 #if SQUISH_USE_ALTIVEC && SQUISH_USE_SSE
 #error "Cannot enable both Altivec and SSE!"
 #endif

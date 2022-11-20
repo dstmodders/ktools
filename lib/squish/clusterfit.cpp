@@ -5,7 +5,7 @@
 
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
-    "Software"), to	deal in the Software without restriction, including
+    "Software"), to deal in the Software without restriction, including
     without limitation the rights to use, copy, modify, merge, publish,
     distribute, sublicense, and/or sell copies of the Software, and to
     permit persons to whom the Software is furnished to do so, subject to
@@ -31,21 +31,20 @@
 
 namespace squish {
 
-ClusterFit::ClusterFit(ColourSet const *colours, int flags)
+ClusterFit::ClusterFit(ColourSet const *colours, int flags, float *metric)
     : ColourFit(colours, flags) {
     // set the iteration count
     m_iterationCount =
         (m_flags & kColourIterativeClusterFit) ? kMaxIterations : 1;
 
-    // initialise the best error
-    m_besterror = VEC4_CONST(FLT_MAX);
-
-    // initialise the metric
-    bool perceptual = ((m_flags & kColourMetricPerceptual) != 0);
-    if (perceptual)
-        m_metric = Vec4(0.2126f, 0.7152f, 0.0722f, 0.0f);
+    // initialise the metric (old perceptual = 0.2126f, 0.7152f, 0.0722f)
+    if (metric)
+        m_metric = Vec4(metric[0], metric[1], metric[2], 1.0f);
     else
         m_metric = VEC4_CONST(1.0f);
+
+    // initialise the best error
+    m_besterror = VEC4_CONST(FLT_MAX);
 
     // cache some values
     int const count = m_colours->GetCount();
