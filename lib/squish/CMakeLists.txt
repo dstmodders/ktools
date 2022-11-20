@@ -9,6 +9,7 @@
 project(squish)
 
 cmake_minimum_required(VERSION 2.8.12)
+cmake_policy(SET CMP0077 NEW)
 
 option(BUILD_SQUISH_WITH_OPENMP "Build with OpenMP." ON)
 
