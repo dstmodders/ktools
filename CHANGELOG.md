@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Bump [Boost.Endian][] library from 1.54.0 to 1.80.0
 - Bump [TCLAP][] library from 1.2.1 to 1.2.5
 - Bump [pugixml][] library from 1.4 to 1.13
+- Bump [squish][] library from 1.10 to 1.15
 - Improve code consistency
 
 ### Fixed
@@ -74,6 +75,7 @@ First release.
 [prettier]: https://prettier.io/
 [pugixml]: https://pugixml.org/
 [remark]: https://remark.js.org/
+[squish]: https://libsquish.sourceforge.io/
 [stylelint]: https://stylelint.io/
 [tclap]: https://tclap.sourceforge.net/
 [travis ci]: https://travis-ci.org/
