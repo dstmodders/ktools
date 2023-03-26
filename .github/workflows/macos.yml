@@ -6,23 +6,12 @@ on:
       - develop
       - main
 
-env:
-  SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-  SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
-  SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-
 jobs:
   build:
     runs-on: macos-12
     steps:
       - name: Check out
         uses: actions/checkout@v3
-      - name: Send Slack notification
-        uses: codedsolar/slack-action@v1
-        if: ${{ github.event_name != 'pull_request' }}
-        id: slack
-        with:
-          status: in-progress
       - name: Install ImageMagick
         run: brew install imagemagick
       - name: Build and install ktools
@@ -38,9 +27,3 @@ jobs:
         with:
           name: macos-test-output
           path: test/output/
-      - name: Update Slack notification
-        uses: codedsolar/slack-action@v1
-        if: ${{ github.event_name != 'pull_request' && always() }}
-        with:
-          status: ${{ job.status }}
-          timestamp: ${{ steps.slack.outputs.slack-timestamp }}
