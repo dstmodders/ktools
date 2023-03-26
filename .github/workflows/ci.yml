@@ -19,7 +19,7 @@ jobs:
           echo "SLACK_COLOR_FAILURE=#cc1f2d" >> $GITHUB_ENV
           echo "SLACK_COLOR_SUCCESS=#24a943" >> $GITHUB_ENV
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
       - name: Install dependencies
