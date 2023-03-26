@@ -4,6 +4,7 @@ cmake-build-*/
 
 ### Project ###
 # general
+.cmake/
 CMakeCache.txt
 CMakeFiles/
 Testing/
