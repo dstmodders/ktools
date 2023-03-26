@@ -1,17 +1,17 @@
 # ktools
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/dstmodders/ktools)](https://hub.docker.com/r/dstmodders/ktools)
-[![CI](https://img.shields.io/github/workflow/status/dstmodders/ktools/CI?label=ci)](https://github.com/dstmodders/ktools/actions/workflows/ci.yml)
-[![Linux](https://img.shields.io/github/workflow/status/dstmodders/ktools/Linux?label=linux)](https://github.com/dstmodders/ktools/actions/workflows/linux.yml)
-[![macOS](https://img.shields.io/github/workflow/status/dstmodders/ktools/macOS?label=macos)](https://github.com/dstmodders/ktools/actions/workflows/macos.yml)
+[![Docker Pulls]](https://hub.docker.com/r/dstmodders/ktools)
+[![CI]](https://github.com/dstmodders/ktools/actions/workflows/ci.yml)
+[![Linux]](https://github.com/dstmodders/ktools/actions/workflows/linux.yml)
+[![macOS]](https://github.com/dstmodders/ktools/actions/workflows/macos.yml)
 
 > As I do sometimes develop mods for this game, I'm still dependent on this
 > project. However, the original one seems to be abandoned (the last commit was
 > in 2016), so I've decided to make a proper fork and continue with the
 > development.
 
-A set of cross-platform modding tools for the game [Don't Starve][], by
-[Klei Entertainment][].
+A set of cross-platform modding tools for the game [Don't Starve], by [Klei
+Entertainment].
 
 **IMPORTANT**: In what follows, a code block starting with a `$` indicates
 something that should be typed in a terminal (`cmd.exe`, for Windows). The `$`
@@ -27,7 +27,7 @@ and the space following it should not be typed.
 
 ## ktech
 
-A bidirectional cross-platform converter between [Klei Entertainment][]'s TEX
+A bidirectional cross-platform converter between [Klei Entertainment]'s TEX
 texture format and PNG.
 
 ### Basic usage & examples
@@ -143,21 +143,21 @@ the number of the mipmap (counting from zero).
 
 ## krane
 
-A cross-platform decompiler for [Klei Entertainment][]'s animation format.
+A cross-platform decompiler for [Klei Entertainment]'s animation format.
 
-`krane`'s output is a [Spriter][] project.
+`krane`'s output is a [Spriter] project.
 
 ### Basic usage & examples
 
 `krane`'s primary usage is converting an animation file (`anim.bin`) and a build
-file (`build.bin`) as found within the ZIPs of [Don't Starve][]'s `anim/`
-subdirectory into a [Spriter][] project. The simplest use case is:
+file (`build.bin`) as found within the ZIPs of [Don't Starve]'s `anim/`
+subdirectory into a [Spriter] project. The simplest use case is:
 
 ```shell
 $ krane anim.bin build.bin output_dir
 ```
 
-Which generates a [Spriter][] project inside `output_dir`.
+Which generates a [Spriter] project inside `output_dir`.
 
 The last argument to `krane` is always taken to be the output directory, which
 is created if it doesn't exist. All arguments before that are input files, which
@@ -168,9 +168,9 @@ build files are accepted if the `--build-name option` is given to select a
 single build by build name). Atlases need not be given as arguments, since they
 are determined upon inspection of the build file.
 
-Not all of [Don't Starve][]'s animations can be faithfully represented as a
-[Spriter][] project, since [Spriter][]'s animation representation is much more
-restrictive than [Don't Starve][]'s native one (it doesn't support shearing, for
+Not all of [Don't Starve]'s animations can be faithfully represented as a
+[Spriter] project, since [Spriter]'s animation representation is much more
+restrictive than [Don't Starve]'s native one (it doesn't support shearing, for
 example). The option `--check-animation-fidelity` will check for and print the
 cases where animation precision is lost.
 
@@ -238,7 +238,7 @@ not be given as arguments.
 
 ## Docker
 
-If you are familiar with [Docker][] you can use the corresponding [Docker Hub][]
+If you are familiar with [Docker] you can use the corresponding [Docker Hub]
 images: https://hub.docker.com/r/dstmodders/ktools
 
 ```shell
@@ -252,7 +252,7 @@ following [Usage](https://github.com/dstmodders/docker-ktools#usage) section.
 
 ## INSTALLATION FROM SOURCE
 
-The library [libzip][] is an optional dependency. If it is present and found at
+The library [libzip] is an optional dependency. If it is present and found at
 compilation time, zip archives are treated in the same manner as directories
 when given as input.
 
@@ -267,7 +267,7 @@ $ sudo apt-get update
 $ sudo apt-get install build-essential cmake libpng-dev libreadline-dev libzip-dev
 ```
 
-#### 2. Build & install [ImageMagick][]
+#### 2. Build & install [ImageMagick]
 
 ```shell
 $ sudo apt-get install wget
@@ -288,8 +288,8 @@ $ ./configure && make
 $ sudo make install
 ```
 
-If for some reason there was an issue in finding an [ImageMagick][] library, you
-can point [CMake][] to it manually:
+If for some reason there was an issue in finding an [ImageMagick] library, you
+can point [CMake] to it manually:
 
 ```shell
 $ sudo apt-get install pkg-config
@@ -306,15 +306,15 @@ $ sudo make install
 
 ### macOS
 
-#### 1. Install [ImageMagick][]
+#### 1. Install [ImageMagick]
 
-If you have [Homebrew][] installed:
+If you have [Homebrew] installed:
 
 ```shell
 $ brew install imagemagick
 ```
 
-Otherwise, download and build [ImageMagick][] manually. You may use
+Otherwise, download and build [ImageMagick] manually. You may use
 [Linux 2nd step](#linux) as an example.
 
 #### 2. Build & install `ktools`
@@ -325,8 +325,8 @@ $ ./configure && make
 $ sudo make install
 ```
 
-If for some reason there was an issue in finding an [ImageMagick][] library, you
-can point [CMake][] to it manually:
+If for some reason there was an issue in finding an [ImageMagick] library, you
+can point [CMake] to it manually:
 
 ```shell
 $ brew install pkg-config
@@ -343,7 +343,7 @@ $ sudo make install
 
 ### Windows
 
-Open [CMake][], select the `ktools` directory as the source folder ("Where is
+Open [CMake], select the `ktools` directory as the source folder ("Where is
 the source code") and whichever directory you'd like as the build folder ("Where
 to build the binaries"). Click "Configure" and select a generator (typically
 either a version of Visual Studio or "MinGW Makefiles"). Leave "Use default
@@ -365,8 +365,10 @@ select "Release" as the active solution configuration. Then build the solution
 
 See `NOTICE.txt`.
 
+[ci]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/ci.yml?branch=main&label=ci
 [cmake]: https://cmake.org/
 [docker hub]: https://hub.docker.com/
+[docker pulls]: https://img.shields.io/docker/pulls/dstmodders/ktools
 [docker]: https://www.docker.com/
 [don't starve]: https://www.klei.com/games/dont-starve
 [homebrew]: https://brew.sh/
@@ -374,6 +376,8 @@ See `NOTICE.txt`.
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
 [libzip]: https://libzip.org/
+[linux]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/linux.yml?branch=main&label=linux
+[macos]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/macos.yml?branch=main&label=macos
 [releases]: https://github.com/dstmodders/ktools/releases
 [spriter]: https://brashmonkey.com/spriter-pro/
 [zlib]: https://zlib.net/
