@@ -51,7 +51,7 @@ jobs:
           make install
           ldconfig /usr/local/lib/
         env:
-          IMAGEMAGICK_VERSION: 7.1.0-52
+          IMAGEMAGICK_VERSION: 7.1.1-5
       - name: Build and install ktools
         run: ./configure && make && make install
       - name: Run ktech
