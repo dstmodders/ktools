@@ -1,14 +1,16 @@
+> **Note**
+>
+> As we do sometimes develop mods for this game, we're still dependent on this
+> project. However, the original one seems to be abandoned (the last commit was
+> in 2016), so we've decided to make a proper fork and continue with the
+> development.
+
 # ktools
 
 [![Docker Pulls]](https://hub.docker.com/r/dstmodders/ktools)
 [![CI]](https://github.com/dstmodders/ktools/actions/workflows/ci.yml)
 [![Linux]](https://github.com/dstmodders/ktools/actions/workflows/linux.yml)
 [![macOS]](https://github.com/dstmodders/ktools/actions/workflows/macos.yml)
-
-> As I do sometimes develop mods for this game, I'm still dependent on this
-> project. However, the original one seems to be abandoned (the last commit was
-> in 2016), so I've decided to make a proper fork and continue with the
-> development.
 
 A set of cross-platform modding tools for the game [Don't Starve], by [Klei
 Entertainment].
@@ -365,10 +367,10 @@ select "Release" as the active solution configuration. Then build the solution
 
 See `NOTICE.txt`.
 
-[ci]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/ci.yml?branch=main&label=ci
+[ci]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/ci.yml?branch=main&label=ci&logo=github
 [cmake]: https://cmake.org/
 [docker hub]: https://hub.docker.com/
-[docker pulls]: https://img.shields.io/docker/pulls/dstmodders/ktools
+[docker pulls]: https://img.shields.io/docker/pulls/dstmodders/ktools?logo=docker
 [docker]: https://www.docker.com/
 [don't starve]: https://www.klei.com/games/dont-starve
 [homebrew]: https://brew.sh/
@@ -376,8 +378,8 @@ See `NOTICE.txt`.
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
 [libzip]: https://libzip.org/
-[linux]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/linux.yml?branch=main&label=linux
-[macos]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/macos.yml?branch=main&label=macos
+[linux]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/linux.yml?branch=main&label=linux&logo=github
+[macos]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/macos.yml?branch=main&label=macos&logo=github
 [releases]: https://github.com/dstmodders/ktools/releases
 [spriter]: https://brashmonkey.com/spriter-pro/
 [zlib]: https://zlib.net/
