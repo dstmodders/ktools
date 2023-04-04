@@ -105,7 +105,7 @@ if [ "${PLATFORM}" = "linux" ] || [ "${PLATFORM}" = "macos" ]; then
       printf '\n'
     elif [ "${PLATFORM}" = "macos" ]; then
       printf "Example for macOS (when installed using Homebrew):\n\n"
-      print_cmake_example '/usr/local/Cellar/imagemagick/7.1.0-5/lib' '/usr/local/Cellar/imagemagick/7.1.0-5/include' "${LIB_EXT}"
+      print_cmake_example '/usr/local/Cellar/imagemagick/7.1.1-6/lib' '/usr/local/Cellar/imagemagick/7.1.1-6/include' "${LIB_EXT}"
       printf '\n'
     fi
   fi
