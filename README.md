@@ -10,7 +10,7 @@
 [![Docker Pulls]](https://hub.docker.com/r/dstmodders/ktools)
 [![CI]](https://github.com/dstmodders/ktools/actions/workflows/ci.yml)
 [![Build Linux]](https://github.com/dstmodders/ktools/actions/workflows/build-linux.yml)
-[![macOS]](https://github.com/dstmodders/ktools/actions/workflows/macos.yml)
+[![Build macOS]](https://github.com/dstmodders/ktools/actions/workflows/build-macos.yml)
 
 A set of cross-platform modding tools for the game [Don't Starve], by [Klei
 Entertainment].
@@ -368,6 +368,7 @@ select "Release" as the active solution configuration. Then build the solution
 See `NOTICE.txt`.
 
 [build linux]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/build-linux.yml?branch=main&label=build%20linux&logo=linux&logoColor=fff
+[build macos]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/build-macos.yml?branch=main&label=build%20macos&logo=apple&logoColor=fff
 [ci]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/ci.yml?branch=main&label=ci&logo=github
 [cmake]: https://cmake.org/
 [docker hub]: https://hub.docker.com/
@@ -379,7 +380,6 @@ See `NOTICE.txt`.
 [klei entertainment]: https://klei.com/
 [libpng]: http://www.libpng.org/pub/png/libpng.html
 [libzip]: https://libzip.org/
-[macos]: https://img.shields.io/github/actions/workflow/status/dstmodders/ktools/macos.yml?branch=main&label=macos&logo=github
 [releases]: https://github.com/dstmodders/ktools/releases
 [spriter]: https://brashmonkey.com/spriter-pro/
 [zlib]: https://zlib.net/
