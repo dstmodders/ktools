@@ -1,10 +1,22 @@
 name: CI
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
       - develop
       - main
+  pull_request:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
 
 env:
   SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
@@ -16,28 +28,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: '3.12'
       - name: Send Slack notification
-        uses: codedsolar/slack-action@v1
+        uses: codedsolar/slack-action@7747edbf087b4facb2726870a34a1f174314b5ae # v1.5.0
         if: ${{ github.event_name != 'pull_request' }}
         id: slack
         with:
+          fields: |
+            {STATUS}
+            {REF}
           status: in-progress
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
       - name: Install dependencies
         run: |
           sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang-format
           python -m pip install --upgrade pip
           pip install cmakelang
       - name: Lint
         id: lint
         run: ./bin/lint.sh
       - name: Update Slack notification
-        uses: codedsolar/slack-action@v1
+        uses: codedsolar/slack-action@7747edbf087b4facb2726870a34a1f174314b5ae # v1.5.0
         if: ${{ github.event_name != 'pull_request' && always() }}
         with:
+          fields: |
+            {STATUS}
+            {REF}
           status: ${{ job.status }}
           timestamp: ${{ steps.slack.outputs.slack-timestamp }}
