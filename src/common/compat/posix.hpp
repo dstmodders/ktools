@@ -66,17 +66,17 @@ extern "C" {
 #endif
 
 #if !defined(S_ISDIR) && defined(S_IFMT) && defined(S_IFDIR)
-#define S_ISDIR(mode) (((mode)&S_IFMT) == S_IFDIR)
+#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
 #endif
 #if !defined(S_ISDIR) && defined(S_IFDIR)
-#define S_ISDIR(mode) ((mode)&S_IFDIR)
+#define S_ISDIR(mode) ((mode) & S_IFDIR)
 #endif
 
 #if !defined(S_ISREG) && defined(S_IFMT) && defined(S_IFREG)
-#define S_ISREG(mode) (((mode)&S_IFMT) == S_IFREG)
+#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 #endif
 #if !defined(S_ISREG) && defined(S_IFREG)
-#define S_ISREG(mode) ((mode)&S_IFREG)
+#define S_ISREG(mode) ((mode) & S_IFREG)
 #endif
 
 #if !defined(HAVE_MODE_T)
