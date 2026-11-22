@@ -2,11 +2,11 @@
 
 get_platform() {
   case "$(uname -s)" in
-    Linux*) printf 'linux';;
-    Darwin*) printf 'macos';;
-    CYGWIN*) printf 'cygwin';;
-    MINGW*) printf 'minigw';;
-    *) printf 'unknown';;
+    Linux*) printf 'linux' ;;
+    Darwin*) printf 'macos' ;;
+    CYGWIN*) printf 'cygwin' ;;
+    MINGW*) printf 'minigw' ;;
+    *) printf 'unknown' ;;
   esac
 }
 
@@ -44,11 +44,11 @@ print_cmake_example() {
   -DImageMagick_MagickWand_INCLUDE_DIR='%s/ImageMagick-7' \\
   -DImageMagick_MagickWand_LIBRARY='%s/libMagickWand-7.Q16HDRI.%s' \\
 .\n" \
-  "${lib_dir}" "${ext}" \
-  "${include_dir}" \
-  "${lib_dir}" "${ext}" \
-  "${include_dir}" \
-  "${lib_dir}" "${ext}"
+    "${lib_dir}" "${ext}" \
+    "${include_dir}" \
+    "${lib_dir}" "${ext}" \
+    "${include_dir}" \
+    "${lib_dir}" "${ext}"
 }
 
 PLATFORM="$(get_platform)"
@@ -94,7 +94,7 @@ if [ "${PLATFORM}" = "linux" ] || [ "${PLATFORM}" = "macos" ]; then
       -DImageMagick_MagickCore_LIBRARY="$(pkg-config --variable=libdir MagickCore)/lib$(pkg-config --variable=libname MagickCore).${LIB_EXT}" \
       -DImageMagick_MagickWand_INCLUDE_DIR="$(pkg-config --cflags-only-I MagickWand | tail -c+3)" \
       -DImageMagick_MagickWand_LIBRARY="$(pkg-config --variable=libdir MagickWand)/lib$(pkg-config --variable=libname MagickWand).${LIB_EXT}" \
-    .
+      .
     exit 0
   else
     printf 'Warning: pkg-config is not available. You may need to manually specify the ImageMagick 7 location.\n\n'
