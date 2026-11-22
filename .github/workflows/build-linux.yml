@@ -1,10 +1,22 @@
-name: Linux
+name: Build Linux
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
     branches:
       - develop
       - main
+  pull_request:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
 
 env:
   SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
@@ -18,15 +30,31 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        container: ['debian:bullseye']
+        container: ['debian:trixie']
     steps:
+      - name: Install Node.js
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl libatomic1 xz-utils
+          curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
+            | tar -xJ -C /usr/local --strip-components=1
+        env:
+          NODE_VERSION: 26.13.1
       - name: Check out
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        id: node
+        with:
+          node-version: 26.13.1
       - name: Send Slack notification
-        uses: codedsolar/slack-action@v1
+        uses: codedsolar/slack-action@7747edbf087b4facb2726870a34a1f174314b5ae # v1.5.0
         if: ${{ github.event_name != 'pull_request' }}
         id: slack
         with:
+          fields: |
+            {STATUS}
+            {REF}
           status: in-progress
       - name: Install dependencies
         run: |
@@ -38,14 +66,13 @@ jobs:
             libpng-dev \
             libreadline-dev \
             libzip-dev \
-            nodejs \
             pkg-config \
             wget
       - name: Install ImageMagick
         run: |
-          wget -P /tmp/ "https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-          tar xf "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz" -C /tmp/
-          cd /tmp/ImageMagick-${IMAGEMAGICK_VERSION}/
+          wget -P /tmp/ "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/${IMAGEMAGICK_VERSION}.tar.gz"
+          tar xf "/tmp/${IMAGEMAGICK_VERSION}.tar.gz" -C /tmp/
+          cd "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}/"
           ./configure
           make
           make install
@@ -61,13 +88,16 @@ jobs:
       - name: Test
         run: ./test/test.sh
       - name: Upload test output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: linux-test-output
           path: test/output/
       - name: Update Slack notification
-        uses: codedsolar/slack-action@v1
+        uses: codedsolar/slack-action@7747edbf087b4facb2726870a34a1f174314b5ae # v1.5.0
         if: ${{ github.event_name != 'pull_request' && always() }}
         with:
+          fields: |
+            {STATUS}
+            {REF}
           status: ${{ job.status }}
           timestamp: ${{ steps.slack.outputs.slack-timestamp }}
