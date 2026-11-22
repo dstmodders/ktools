@@ -1,0 +1,22 @@
+{
+  "name": "ktools",
+  "private": true,
+  "scripts": {
+    "deduplicate": "pnpm dedupe",
+    "format": "run-s format:sort-package-json format:prettier",
+    "format:prettier": "prettier --write .",
+    "format:sort-package-json": "sort-package-json",
+    "lint": "run-s lint:sort-package-json lint:prettier lint:shellcheck",
+    "lint:prettier": "prettier --check .",
+    "lint:shellcheck": "shellcheck bin/*.sh test/*.sh",
+    "lint:sort-package-json": "sort-package-json --check"
+  },
+  "devDependencies": {
+    "npm-run-all2": "^9.0.4",
+    "prettier": "^3.9.10",
+    "prettier-plugin-sh": "^0.20.2",
+    "shellcheck": "^4.1.0",
+    "sort-package-json": "^4.1.0"
+  },
+  "packageManager": "pnpm@12.21.0"
+}
