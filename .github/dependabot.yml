@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    labels:
+      - dependencies
+    schedule:
+      interval: weekly
+    target-branch: develop
+    groups:
+      github-actions:
+        patterns: ['*']
+  - package-ecosystem: npm
+    directory: /
+    labels:
+      - dependencies
+    schedule:
+      interval: weekly
+    target-branch: develop
+    groups:
+      npm-development:
+        dependency-type: development
