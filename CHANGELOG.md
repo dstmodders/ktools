@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Bump [Boost.Endian] library from 1.54.0 to 1.80.0
+- Bump [CMake] minimum required version from 2.8.12 to 3.5
 - Bump [TCLAP] library from 1.2.1 to 1.2.5
 - Bump [pugixml] library from 1.4 to 1.13
 - Bump [squish] library from 1.10 to 1.15
@@ -68,6 +69,7 @@ First release.
 [4.4.0]: https://github.com/dstmodders/ktools/compare/4.3.1...4.4.0
 [4.3.1]: https://github.com/dstmodders/ktools/compare/4.3.0...4.3.1
 [boost.endian]: https://www.boost.org/
+[cmake]: https://cmake.org/
 [eslint]: https://eslint.org/
 [github actions]: https://github.com/features/actions
 [github]: https://github.com/

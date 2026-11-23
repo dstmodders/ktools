@@ -41,9 +41,7 @@ jobs:
       - name: Install ImageMagick
         run: brew install imagemagick
       - name: Build and install ktools
-        run: |
-          sed -i.bak 's/exec cmake /exec cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 /g' configure
-          ./configure && make && sudo make install
+        run: ./configure && make && sudo make install
       - name: Run ktech
         run: ktech --version
       - name: Run krane
