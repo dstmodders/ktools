@@ -11,7 +11,8 @@
     "lint:cmake": "bash -c 'set -euo pipefail; shopt -s nullglob; mapfile -t files < <(find . -iname CMakeLists.txt -not -path \"./node_modules/*\" -not -path \"./.git/*\" -not -path \"./deps/*\" -not -path \"./build/*\" -not -path \"./releases/*\" | sort); cmake-lint --suppress-decorations \"${files[@]}\" ./cmake/*.cmake ./cmake_uninstall.cmake.in'",
     "lint:prettier": "prettier --check .",
     "lint:shellcheck": "bash -c 'shopt -s nullglob; set -- bin/*.sh test/*.sh; (($#)) || exit 0; exec shellcheck $@'",
-    "lint:sort-package-json": "sort-package-json --check"
+    "lint:sort-package-json": "sort-package-json --check",
+    "test": "bash test/run.sh"
   },
   "devDependencies": {
     "npm-run-all2": "^9.0.4",
