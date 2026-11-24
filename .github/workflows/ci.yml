@@ -29,6 +29,11 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        id: node
+        with:
+          node-version: 26.13.1
       - name: Set up Python
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
@@ -41,16 +46,84 @@ jobs:
           fields: |
             {STATUS}
             {REF}
+            Node.js: ${{ steps.node.outputs.node-version }}
+            CMakeLint issues: Checking...
+            ClangFormat issues: Checking...
+            Prettier issues: Checking...
+            ShellCheck issues: Checking...
           status: in-progress
-      - name: Install dependencies
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install npm dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install CMake and clang-format tools
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends clang-format
           python -m pip install --upgrade pip
           pip install cmakelang
-      - name: Lint
-        id: lint
-        run: ./bin/lint.sh
+      - name: Lint using Prettier
+        run: pnpm lint:prettier || true
+      - name: Output Prettier results
+        id: prettier
+        run: echo "issues=$(pnpm exec prettier --list-different . | wc -l)" >> "$GITHUB_OUTPUT"
+      - name: Lint using ShellCheck
+        run: pnpm lint:shellcheck || true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Output ShellCheck results
+        id: shellcheck
+        run: |
+          issues=$(bash -c 'shopt -s nullglob; set -- bin/*.sh test/*.sh; (($#)) || exit 0; pnpm exec shellcheck -f gcc $@' 2>&1 | wc -l)
+          echo "issues=$issues" >> "$GITHUB_OUTPUT"
+      - name: Lint using cmake-lint
+        run: pnpm lint:cmake || true
+      - name: Output cmake-lint results
+        id: cmake-lint
+        run: |
+          set +e
+          output="$(pnpm lint:cmake 2>&1)"
+          status=$?
+          printf '%s\n' "${output}"
+          if [ "${status}" -eq 0 ]; then
+            echo 'issues=0' >> "$GITHUB_OUTPUT"
+          else
+            # cmakelang prints one diagnostic block per issue; count non-empty lines as a proxy
+            echo "issues=$(printf '%s\n' "${output}" | sed '/^$/d' | wc -l)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Lint using clang-format
+        run: pnpm lint:clang-format || true
+      - name: Output clang-format results
+        id: clang-format
+        run: |
+          set +e
+          output="$(pnpm lint:clang-format 2>&1)"
+          status=$?
+          printf '%s\n' "${output}"
+          if [ "${status}" -eq 0 ]; then
+            echo 'issues=0' >> "$GITHUB_OUTPUT"
+          else
+            echo "issues=$(printf '%s\n' "${output}" | grep -c 'error:' || true)" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check results
+        run: |
+          prettier_issues="${{ steps.prettier.outputs.issues }}"
+          shellcheck_issues="${{ steps.shellcheck.outputs.issues }}"
+          cmake_lint_issues="${{ steps.cmake-lint.outputs.issues }}"
+          clang_format_issues="${{ steps.clang-format.outputs.issues }}"
+
+          echo "Total CMakeLint issues: $cmake_lint_issues"
+          echo "Total ClangFormat issues: $clang_format_issues"
+          echo "Total Prettier issues: $prettier_issues"
+          echo "Total ShellCheck issues: $shellcheck_issues"
+
+          if [ "$prettier_issues" = '0' ] \
+            && [ "$shellcheck_issues" = '0' ] \
+            && [ "$cmake_lint_issues" = '0' ] \
+            && [ "$clang_format_issues" = '0' ]; then
+            exit 0
+          fi
+          exit 1
       - name: Update Slack notification
         uses: codedsolar/slack-action@7747edbf087b4facb2726870a34a1f174314b5ae # v1.5.0
         if: ${{ github.event_name != 'pull_request' && always() }}
@@ -58,5 +131,10 @@ jobs:
           fields: |
             {STATUS}
             {REF}
+            Node.js: ${{ steps.node.outputs.node-version }}
+            CMakeLint issues: ${{ steps.cmake-lint.outputs.issues || 'Skipped' }}
+            ClangFormat issues: ${{ steps.clang-format.outputs.issues || 'Skipped' }}
+            Prettier issues: ${{ steps.prettier.outputs.issues || 'Skipped' }}
+            ShellCheck issues: ${{ steps.shellcheck.outputs.issues || 'Skipped' }}
           status: ${{ job.status }}
           timestamp: ${{ steps.slack.outputs.slack-timestamp }}
