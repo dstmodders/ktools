@@ -26,6 +26,7 @@ and the space following it should not be typed.
   - [Linux](#linux)
   - [macOS](#macos)
   - [Windows](#windows)
+- [Testing](#testing)
 
 ## ktech
 
@@ -362,6 +363,19 @@ For Visual Studio, open the `ALL_BUILD.vcxproj` file, right-click the `ktools`
 solution on the left pane, click on "Configuration Manager..." and make sure to
 select "Release" as the active solution configuration. Then build the solution
 (which may be done by pressing "F7").
+
+## Testing
+
+Run the `ktech` / `krane` integration suite with both tools on `PATH` (for
+example after a local install):
+
+```shell
+$ ./test/run.sh
+$ pnpm test
+```
+
+`./test/run.sh` (or `pnpm test`) requires `ktech` and `krane` on `PATH`.
+Individual scripts under `test/` can still be invoked directly.
 
 ## LICENSE
 
