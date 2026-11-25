@@ -377,6 +377,22 @@ $ pnpm test
 `./test/run.sh` (or `pnpm test`) requires `ktech` and `krane` on `PATH`.
 Individual scripts under `test/` can still be invoked directly.
 
+By default, the suite checks that outputs exist and look valid (non-empty, PNG
+magic, `ktech --info` for TEX). To also bit-compare against a reference tree
+(for example a zip from your own host), unpack it and point the suite at it:
+
+```shell
+$ curl -fsSL https://example/ktools-test-expected.zip -o expected.zip
+$ unzip -d test/expected expected.zip
+$ KTOOLS_TEST_EXPECTED="$PWD/test/expected" pnpm test
+$ KTOOLS_TEST_EXPECTED="$PWD/test/expected" ./test/run.sh
+$ ./test/run.sh -e "$PWD/test/expected"
+$ ./test/run.sh --expected "$PWD/test/expected"
+```
+
+`test/expected/` is gitignored; the directory should mirror `test/output/`
+relative paths for the files the suite compares.
+
 ## LICENSE
 
 See `NOTICE.txt`.
