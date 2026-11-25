@@ -10,11 +10,15 @@
 #   PATH="$PWD/releases/linux-amd64:$PATH" run.sh
 #
 # Flags:
-#   -h, --help   Show this help message
+#   -e, --expected <dir>   Forwarded to test.sh for optional output cmp
+#   -h, --help             Show this help message
 #
 # Environment Variables:
-#   NO_COLOR     Set to 1 to disable terminal colors
-#                (see no-color.org, default "0")
+#   KTOOLS_TEST_EXPECTED   Directory mirroring test/output for optional cmp
+#                          (default unset; skipped when empty)
+#
+#   NO_COLOR               Set to 1 to disable terminal colors
+#                          (see no-color.org, default "0")
 #
 set -euo pipefail
 
@@ -28,16 +32,23 @@ source "${ROOT_DIR}/bin/common.sh"
 
 NO_COLOR="${NO_COLOR:-0}"
 
+TEST_ARGS=()
+
 run_tools_suite() {
   require_cmds ktech krane
   print_step 'Running ktech/krane tests' 'test.sh'
   printf '\n'
   print_separator
-  bash "${BASE_DIR}/test.sh"
+  bash "${BASE_DIR}/test.sh" "${TEST_ARGS[@]}"
 }
 
-if [ "$#" -gt 0 ]; then
+while [ "$#" -gt 0 ]; do
   case "$1" in
+    -e | --expected)
+      [ "$#" -ge 2 ] || die '-e/--expected requires a directory'
+      TEST_ARGS+=(--expected "$2")
+      shift
+      ;;
     -h | --help)
       usage
       exit 0
@@ -49,7 +60,8 @@ if [ "$#" -gt 0 ]; then
       die "unrecognized argument '$1'"
       ;;
   esac
-fi
+  shift
+done
 
 trap interrupt SIGINT
 

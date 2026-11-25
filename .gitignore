@@ -35,5 +35,6 @@
 /local/
 /node_modules/
 /releases/
+/test/expected/
 /test/output/
 /x64/

@@ -2,6 +2,26 @@
 #
 # Run ktools integration tests.
 #
+# Usage:
+#   test.sh [flags]
+#
+# Examples:
+#   PATH="$PWD/releases/linux-amd64:$PATH" test.sh
+#   KTOOLS_TEST_EXPECTED=$PWD/test/expected test.sh
+#   test.sh -e "$PWD/test/expected"
+#   test.sh --expected "$PWD/test/expected"
+#
+# Flags:
+#   -e, --expected <dir>   Compare outputs to an expected tree (optional)
+#   -h, --help             Show this help message
+#
+# Environment Variables:
+#   KTOOLS_TEST_EXPECTED   Directory mirroring test/output for optional cmp
+#                          (default unset; skipped when empty)
+#
+#   NO_COLOR               Set to 1 to disable terminal colors
+#                          (see no-color.org, default "0")
+#
 set -euo pipefail
 
 # define constants
@@ -28,6 +48,7 @@ readonly KTECH_TRANSPARENCY_PNG
 source "${ROOT_DIR}/bin/common.sh"
 
 # define defaults for environment variables
+EXPECTED_DIR="${KTOOLS_TEST_EXPECTED:-}"
 NO_COLOR="${NO_COLOR:-0}"
 
 print_title() {
@@ -222,75 +243,135 @@ require_tex() {
   fi
 }
 
+require_matches_expected() {
+  local relative="$1"
+  local actual="${OUTPUT_DIR}/${relative}"
+  local expected="${EXPECTED_DIR}/${relative}"
+
+  [ -n "${EXPECTED_DIR}" ] || return 0
+  require_nonempty "${actual}" || return 1
+  if [ ! -s "${expected}" ]; then
+    printf 'missing expected file: %s\n' "${expected}" >&2
+    return 1
+  fi
+  if ! cmp -s "${actual}" "${expected}"; then
+    printf 'output differs from expected (%s)\n' "${relative}" >&2
+    return 1
+  fi
+}
+
 verify_ktech_outputs() {
-  local compression filter
+  local compression filter relative
 
-  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}.png" || return 1
-  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_quality-10.png" || return 1
-  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_512x512.png" || return 1
-  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_512x512_extend.png" || return 1
+  for relative in \
+    "${KTECH_SRC_FILENAME}.png" \
+    "${KTECH_SRC_FILENAME}_quality-10.png" \
+    "${KTECH_SRC_FILENAME}_512x512.png" \
+    "${KTECH_SRC_FILENAME}_512x512_extend.png"; do
+    require_png "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
+  done
 
-  require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}.tex" || return 1
-  require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.tex" || return 1
-  require_nonempty "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.xml" || return 1
+  for relative in \
+    "${KTECH_SRC_FILENAME}.tex" \
+    "${KTECH_SRC_FILENAME}_atlas.tex"; do
+    require_tex "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
+  done
+
+  relative="${KTECH_SRC_FILENAME}_atlas.xml"
+  require_nonempty "${OUTPUT_DIR}/${relative}" || return 1
+  require_matches_expected "${relative}" || return 1
 
   for compression in dxt1 dxt3 dxt5 rgb rgba; do
-    require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${compression}.tex" || return 1
+    relative="${KTECH_SRC_FILENAME}_${compression}.tex"
+    require_tex "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
   done
   for filter in bicubic box catrom cubic lanczos mitchell; do
-    require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${filter}.tex" || return 1
+    relative="${KTECH_SRC_FILENAME}_${filter}.tex"
+    require_tex "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
   done
 
-  require_tex "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}.tex" || return 1
-  require_tex \
-    "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}_no-premultiply.tex" || return 1
+  for relative in \
+    "${KTECH_TRANSPARENCY_FILENAME}.tex" \
+    "${KTECH_TRANSPARENCY_FILENAME}_no-premultiply.tex"; do
+    require_tex "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
+  done
 }
 
 verify_krane_outputs() {
-  require_nonempty "${KRANE_OUTPUT_DIR}/chester_build.scml" || return 1
-  require_png "${KRANE_OUTPUT_DIR}/chester_body/chester_body-0.png" || return 1
-  require_png "${KRANE_OUTPUT_DIR}_mark-atlases/atlas-0.png" || return 1
-  require_nonempty "${KRANE_OUTPUT_DIR}_bank/chester_build.scml" || return 1
-  require_png "${KRANE_OUTPUT_DIR}_bank/chester_body/chester_body-0.png" || return 1
-  require_nonempty "${KRANE_OUTPUT_DIR}_rename/chester_build_renamed.scml" || return 1
-  require_png "${KRANE_OUTPUT_DIR}_rename/chester_body/chester_body-0.png" || return 1
+  local relative
+
+  for relative in \
+    'chester/chester_build.scml' \
+    'chester_bank/chester_build.scml' \
+    'chester_rename/chester_build_renamed.scml'; do
+    require_nonempty "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
+  done
+
+  for relative in \
+    'chester/chester_body/chester_body-0.png' \
+    'chester_mark-atlases/atlas-0.png' \
+    'chester_bank/chester_body/chester_body-0.png' \
+    'chester_rename/chester_body/chester_body-0.png'; do
+    require_png "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
+  done
 }
 
 verify_tex_outputs() {
-  local name compression filter
+  local name compression filter relative
 
   for name in \
     "${KTECH_SRC_FILENAME}" \
     "${KTECH_SRC_FILENAME}_atlas" \
     "${KTECH_TRANSPARENCY_FILENAME}" \
     "${KTECH_TRANSPARENCY_FILENAME}_no-premultiply"; do
-    require_png "${OUTPUT_DIR}/${name}.tex.png" || return 1
+    relative="${name}.tex.png"
+    require_png "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
   done
   for compression in dxt1 dxt3 dxt5 rgb rgba; do
-    require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${compression}.tex.png" \
-      || return 1
+    relative="${KTECH_SRC_FILENAME}_${compression}.tex.png"
+    require_png "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
   done
   for filter in bicubic box catrom cubic lanczos mitchell; do
-    require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${filter}.tex.png" \
-      || return 1
+    relative="${KTECH_SRC_FILENAME}_${filter}.tex.png"
+    require_png "${OUTPUT_DIR}/${relative}" || return 1
+    require_matches_expected "${relative}" || return 1
   done
 }
 
 run_verify_step() {
   local label="$1"
   local verifier="$2"
+  local err=''
+  local status=0
 
   print_step_dotted "${label}"
-  if case "${verifier}" in
-    verify_ktech_outputs) verify_ktech_outputs ;;
-    verify_krane_outputs) verify_krane_outputs ;;
-    verify_tex_outputs) verify_tex_outputs ;;
-    *) die "unknown verifier: ${verifier}" ;;
-  esac then
+  err="$(
+    case "${verifier}" in
+      verify_ktech_outputs) verify_ktech_outputs ;;
+      verify_krane_outputs) verify_krane_outputs ;;
+      verify_tex_outputs) verify_tex_outputs ;;
+      *)
+        printf 'unknown verifier: %s\n' "${verifier}" >&2
+        exit 1
+        ;;
+    esac 2>&1
+  )" || status=$?
+
+  if [ "${status}" -eq 0 ]; then
     print_step_success
   else
     print_step_failed
-    die "${label} failed"
+    print_separator
+    die "${err:-${label} failed}"
   fi
 }
 
@@ -306,6 +387,7 @@ run_test_stage() {
       print_step_success
     else
       print_step_failed
+      print_separator
       die "${label} failed; see ${BASE_DIR}/${LOG_FILE#./}"
     fi
   elif KTOOLS_TEST_STAGE="${stage}" bash "${BASE_DIR}/test.sh" \
@@ -313,6 +395,7 @@ run_test_stage() {
     print_step_success
   else
     print_step_failed
+    print_separator
     die "${label} failed; see ${BASE_DIR}/${LOG_FILE#./}"
   fi
 }
@@ -329,7 +412,35 @@ if [ "${1:-}" = '--internal-stage' ]; then
   exit 0
 fi
 
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -e | --expected)
+      [ "$#" -ge 2 ] || die '-e/--expected requires a directory'
+      EXPECTED_DIR="$2"
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -*)
+      die 'unrecognized flag'
+      ;;
+    *)
+      die "unrecognized argument '$1'"
+      ;;
+  esac
+  shift
+done
+
 cd "${BASE_DIR}"
+
+if [ -n "${EXPECTED_DIR}" ]; then
+  _expected_arg="${EXPECTED_DIR}"
+  EXPECTED_DIR="$(cd "${_expected_arg}" 2> /dev/null && pwd -P)" \
+    || die "expected directory not found: ${_expected_arg}"
+  unset _expected_arg
+fi
 
 print_step_dotted 'Checking dependencies'
 if ! is_installed 'krane'; then
