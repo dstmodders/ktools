@@ -196,6 +196,104 @@ run_generated_tex_tests() {
     "${KTECH_TRANSPARENCY_FILENAME}_no-premultiply"
 }
 
+require_nonempty() {
+  local path="$1"
+  if [ ! -s "${path}" ]; then
+    printf 'missing or empty output: %s\n' "${path}" >&2
+    return 1
+  fi
+}
+
+require_png() {
+  local path="$1"
+  require_nonempty "${path}" || return 1
+  if ! head -c 8 "${path}" | cmp -s - <(printf '\x89PNG\r\n\x1a\n'); then
+    printf 'not a PNG: %s\n' "${path}" >&2
+    return 1
+  fi
+}
+
+require_tex() {
+  local path="$1"
+  require_nonempty "${path}" || return 1
+  if ! ktech --info "${path}" > /dev/null 2>&1; then
+    printf 'ktech could not read TEX: %s\n' "${path}" >&2
+    return 1
+  fi
+}
+
+verify_ktech_outputs() {
+  local compression filter
+
+  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}.png" || return 1
+  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_quality-10.png" || return 1
+  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_512x512.png" || return 1
+  require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_512x512_extend.png" || return 1
+
+  require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}.tex" || return 1
+  require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.tex" || return 1
+  require_nonempty "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.xml" || return 1
+
+  for compression in dxt1 dxt3 dxt5 rgb rgba; do
+    require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${compression}.tex" || return 1
+  done
+  for filter in bicubic box catrom cubic lanczos mitchell; do
+    require_tex "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${filter}.tex" || return 1
+  done
+
+  require_tex "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}.tex" || return 1
+  require_tex \
+    "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}_no-premultiply.tex" || return 1
+}
+
+verify_krane_outputs() {
+  require_nonempty "${KRANE_OUTPUT_DIR}/chester_build.scml" || return 1
+  require_png "${KRANE_OUTPUT_DIR}/chester_body/chester_body-0.png" || return 1
+  require_png "${KRANE_OUTPUT_DIR}_mark-atlases/atlas-0.png" || return 1
+  require_nonempty "${KRANE_OUTPUT_DIR}_bank/chester_build.scml" || return 1
+  require_png "${KRANE_OUTPUT_DIR}_bank/chester_body/chester_body-0.png" || return 1
+  require_nonempty "${KRANE_OUTPUT_DIR}_rename/chester_build_renamed.scml" || return 1
+  require_png "${KRANE_OUTPUT_DIR}_rename/chester_body/chester_body-0.png" || return 1
+}
+
+verify_tex_outputs() {
+  local name compression filter
+
+  for name in \
+    "${KTECH_SRC_FILENAME}" \
+    "${KTECH_SRC_FILENAME}_atlas" \
+    "${KTECH_TRANSPARENCY_FILENAME}" \
+    "${KTECH_TRANSPARENCY_FILENAME}_no-premultiply"; do
+    require_png "${OUTPUT_DIR}/${name}.tex.png" || return 1
+  done
+  for compression in dxt1 dxt3 dxt5 rgb rgba; do
+    require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${compression}.tex.png" \
+      || return 1
+  done
+  for filter in bicubic box catrom cubic lanczos mitchell; do
+    require_png "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_${filter}.tex.png" \
+      || return 1
+  done
+}
+
+run_verify_step() {
+  local label="$1"
+  local verifier="$2"
+
+  print_step_dotted "${label}"
+  if case "${verifier}" in
+    verify_ktech_outputs) verify_ktech_outputs ;;
+    verify_krane_outputs) verify_krane_outputs ;;
+    verify_tex_outputs) verify_tex_outputs ;;
+    *) die "unknown verifier: ${verifier}" ;;
+  esac then
+    print_step_success
+  else
+    print_step_failed
+    die "${label} failed"
+  fi
+}
+
 run_test_stage() {
   local label="$1"
   local stage="$2"
@@ -253,7 +351,10 @@ else
 fi
 
 run_test_stage 'Generating ktech output' 'ktech' 'replace'
+run_verify_step 'Verifying ktech output' verify_ktech_outputs
 run_test_stage 'Generating krane output' 'krane' 'append'
+run_verify_step 'Verifying krane output' verify_krane_outputs
 run_test_stage 'Generating PNGs from generated TEXs' 'tex' 'append'
+run_verify_step 'Verifying generated TEX PNGs' verify_tex_outputs
 
 complete 2 'Tests completed'
