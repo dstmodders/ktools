@@ -1,42 +1,47 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+#
+# Run ktools integration tests.
+#
+set -euo pipefail
 
-BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
-readonly BASE_DIR
+# define constants
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+ROOT_DIR="$(cd "${BASE_DIR}/.." && pwd -P)"
+OUTPUT_DIR='./output'
+SRC_DIR='./src'
+LOG_FILE="${OUTPUT_DIR}/log.txt"
 
-readonly OUTPUT_DIR='./output'
-readonly SRC_DIR='./src'
+KRANE_OUTPUT_DIR="${OUTPUT_DIR}/chester"
+KRANE_SRC_DIR="${SRC_DIR}/chester"
+KTECH_SRC_FILENAME='minimap_atlas'
+KTECH_SRC_PNG="${SRC_DIR}/${KTECH_SRC_FILENAME}.png"
+KTECH_SRC_TEX="${SRC_DIR}/${KTECH_SRC_FILENAME}.tex"
+KTECH_TRANSPARENCY_FILENAME='transparency_test'
+KTECH_TRANSPARENCY_PNG="${SRC_DIR}/${KTECH_TRANSPARENCY_FILENAME}.png"
 
-readonly KRANE_OUTPUT_DIR="${OUTPUT_DIR}/chester"
-readonly KRANE_SRC_DIR="${SRC_DIR}/chester"
-readonly KTECH_SRC_FILENAME='minimap_atlas'
-readonly KTECH_SRC_PNG="${SRC_DIR}/${KTECH_SRC_FILENAME}.png"
-readonly KTECH_SRC_TEX="${SRC_DIR}/${KTECH_SRC_FILENAME}.tex"
-readonly KTECH_TRANSPARENCY_FILENAME='transparency_test'
-readonly KTECH_TRANSPARENCY_PNG="${SRC_DIR}/${KTECH_TRANSPARENCY_FILENAME}.png"
+readonly BASE_DIR ROOT_DIR OUTPUT_DIR SRC_DIR LOG_FILE
+readonly KRANE_OUTPUT_DIR KRANE_SRC_DIR KTECH_SRC_FILENAME
+readonly KTECH_SRC_PNG KTECH_SRC_TEX KTECH_TRANSPARENCY_FILENAME
+readonly KTECH_TRANSPARENCY_PNG
 
-error() {
-  err="$1"
-  printf "Error: %s\n" "${err}" >&2
-  exit 1
-}
+# shellcheck disable=SC1091
+source "${ROOT_DIR}/bin/common.sh"
 
-is_installed() {
-  cmd="$1"
-  if command -v "${cmd}" > /dev/null; then
-    return 0
-  fi
-  return 1
-}
+# define defaults for environment variables
+NO_COLOR="${NO_COLOR:-0}"
 
 print_title() {
-  title="$1"
-  printf '\n%s:\n\n' "${title}"
+  print_separator
+  print_step "$1"
+  printf '\n'
+  print_separator
 }
 
-png_to_tex_compression() {
-  src="$1"
-  compression="$2"
-  printf '\nPNG => TEX (%s):\n\n' "${compression}"
+convert_png_to_tex_with_compression() {
+  local src="$1"
+  local compression="$2"
+
+  print_title "PNG => TEX (${compression})"
   ktech \
     --verbose \
     --compression "${compression}" \
@@ -44,10 +49,11 @@ png_to_tex_compression() {
     "${OUTPUT_DIR}/minimap_atlas_${compression}.tex"
 }
 
-png_to_tex_filter() {
-  src="$1"
-  filter="$2"
-  printf '\nPNG => TEX (%s):\n\n' "${filter}"
+convert_png_to_tex_with_filter() {
+  local src="$1"
+  local filter="$2"
+
+  print_title "PNG => TEX (${filter})"
   ktech \
     --verbose \
     --filter "${filter}" \
@@ -57,31 +63,16 @@ png_to_tex_filter() {
     "${OUTPUT_DIR}/minimap_atlas_${filter}.tex"
 }
 
-png_from_generated_tex() {
-  to="$1"
-  name="$2"
+convert_generated_tex_to_png() {
+  local to="$1"
+  local name="$2"
+
   ktech "${OUTPUT_DIR}/${name}.tex" "${to}/${name}.tex.png"
 }
 
-cd "${BASE_DIR}" || exit 1
-
-if ! is_installed 'krane'; then
-  error 'krane is not installed'
-fi
-
-if ! is_installed 'ktech'; then
-  error 'ktech is not installed'
-fi
-
-# prepare
-rm -Rf "${OUTPUT_DIR}"
-mkdir "${OUTPUT_DIR}"
-
-# ktech
-printf 'Generating ktech output...'
-{
+run_ktech_tests() {
   # TEX => PNG
-  printf 'TEX info:\n\n'
+  print_title 'TEX info'
   ktech --verbose --info "${KTECH_SRC_TEX}"
 
   print_title 'TEX => PNG (default)'
@@ -123,19 +114,19 @@ printf 'Generating ktech output...'
     "${OUTPUT_DIR}/${KTECH_SRC_FILENAME}_atlas.tex"
 
   # compression
-  png_to_tex_compression "${KTECH_SRC_PNG}" 'dxt1'
-  png_to_tex_compression "${KTECH_SRC_PNG}" 'dxt3'
-  png_to_tex_compression "${KTECH_SRC_PNG}" 'dxt5'
-  png_to_tex_compression "${KTECH_SRC_PNG}" 'rgb'
-  png_to_tex_compression "${KTECH_SRC_PNG}" 'rgba'
+  convert_png_to_tex_with_compression "${KTECH_SRC_PNG}" 'dxt1'
+  convert_png_to_tex_with_compression "${KTECH_SRC_PNG}" 'dxt3'
+  convert_png_to_tex_with_compression "${KTECH_SRC_PNG}" 'dxt5'
+  convert_png_to_tex_with_compression "${KTECH_SRC_PNG}" 'rgb'
+  convert_png_to_tex_with_compression "${KTECH_SRC_PNG}" 'rgba'
 
   # filter
-  png_to_tex_filter "${KTECH_SRC_PNG}" 'bicubic'
-  png_to_tex_filter "${KTECH_SRC_PNG}" 'box'
-  png_to_tex_filter "${KTECH_SRC_PNG}" 'catrom'
-  png_to_tex_filter "${KTECH_SRC_PNG}" 'cubic'
-  png_to_tex_filter "${KTECH_SRC_PNG}" 'lanczos'
-  png_to_tex_filter "${KTECH_SRC_PNG}" 'mitchell'
+  convert_png_to_tex_with_filter "${KTECH_SRC_PNG}" 'bicubic'
+  convert_png_to_tex_with_filter "${KTECH_SRC_PNG}" 'box'
+  convert_png_to_tex_with_filter "${KTECH_SRC_PNG}" 'catrom'
+  convert_png_to_tex_with_filter "${KTECH_SRC_PNG}" 'cubic'
+  convert_png_to_tex_with_filter "${KTECH_SRC_PNG}" 'lanczos'
+  convert_png_to_tex_with_filter "${KTECH_SRC_PNG}" 'mitchell'
 
   # transparency test
   print_title 'PNG => TEX (transparency test)'
@@ -150,12 +141,9 @@ printf 'Generating ktech output...'
     --no-premultiply \
     "${KTECH_TRANSPARENCY_PNG}" \
     "${OUTPUT_DIR}/${KTECH_TRANSPARENCY_FILENAME}_no-premultiply.tex"
-} > "${OUTPUT_DIR}/log.txt" 2>&1
-printf ' Done\n'
+}
 
-# krane
-printf 'Generating krane output...'
-{
+run_krane_tests() {
   print_title 'krane (default)'
   krane --verbose "${KRANE_SRC_DIR}" "${KRANE_OUTPUT_DIR}"
 
@@ -180,34 +168,92 @@ printf 'Generating krane output...'
     --rename-build chester_build_renamed \
     "${KRANE_SRC_DIR}" \
     "${KRANE_OUTPUT_DIR}_rename"
-} >> "${OUTPUT_DIR}/log.txt" 2>&1
-printf ' Done\n'
+}
 
-# create PNGs from generated TEXs
-printf 'Generating PNGs from generated TEXs...'
-{
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_atlas"
+run_generated_tex_tests() {
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_atlas"
 
   # compression
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt1"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt3"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt5"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_rgb"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_rgba"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt1"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt3"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_dxt5"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_rgb"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_rgba"
 
   # filter
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_bicubic"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_box"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_catrom"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_cubic"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_lanczos"
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_mitchell"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_bicubic"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_box"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_catrom"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_cubic"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_lanczos"
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_SRC_FILENAME}_mitchell"
 
   # transparency
-  png_from_generated_tex "${OUTPUT_DIR}" "${KTECH_TRANSPARENCY_FILENAME}"
-  png_from_generated_tex \
+  convert_generated_tex_to_png "${OUTPUT_DIR}" "${KTECH_TRANSPARENCY_FILENAME}"
+  convert_generated_tex_to_png \
     "${OUTPUT_DIR}" \
     "${KTECH_TRANSPARENCY_FILENAME}_no-premultiply"
-} > /dev/null 2>&1
-printf ' Done\n'
+}
+
+run_test_stage() {
+  local label="$1"
+  local stage="$2"
+  local log_mode="$3"
+
+  print_step_dotted "${label}"
+  if [ "${log_mode}" = 'append' ]; then
+    if KTOOLS_TEST_STAGE="${stage}" bash "${BASE_DIR}/test.sh" \
+      --internal-stage "${stage}" >> "${LOG_FILE}" 2>&1; then
+      print_step_success
+    else
+      print_step_failed
+      die "${label} failed; see ${BASE_DIR}/${LOG_FILE#./}"
+    fi
+  elif KTOOLS_TEST_STAGE="${stage}" bash "${BASE_DIR}/test.sh" \
+    --internal-stage "${stage}" > "${LOG_FILE}" 2>&1; then
+    print_step_success
+  else
+    print_step_failed
+    die "${label} failed; see ${BASE_DIR}/${LOG_FILE#./}"
+  fi
+}
+
+if [ "${1:-}" = '--internal-stage' ]; then
+  [ "$#" -eq 2 ] || die 'invalid internal test stage'
+  cd "${BASE_DIR}"
+  case "$2" in
+    ktech) run_ktech_tests ;;
+    krane) run_krane_tests ;;
+    tex) run_generated_tex_tests ;;
+    *) die 'unknown internal test stage' ;;
+  esac
+  exit 0
+fi
+
+cd "${BASE_DIR}"
+
+print_step_dotted 'Checking dependencies'
+if ! is_installed 'krane'; then
+  print_step_failed
+  die 'krane is not installed'
+fi
+if ! is_installed 'ktech'; then
+  print_step_failed
+  die 'ktech is not installed'
+fi
+print_step_success
+
+print_step_dotted 'Preparing output directory'
+if rm -rf -- "${OUTPUT_DIR}" && mkdir -p -- "${OUTPUT_DIR}"; then
+  print_step_success
+else
+  print_step_failed
+  die 'could not prepare output directory'
+fi
+
+run_test_stage 'Generating ktech output' 'ktech' 'replace'
+run_test_stage 'Generating krane output' 'krane' 'append'
+run_test_stage 'Generating PNGs from generated TEXs' 'tex' 'append'
+
+complete 2 'Tests completed'
