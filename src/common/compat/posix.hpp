@@ -14,11 +14,13 @@ extern "C" {
 }
 
 #ifdef IS_WINDOWS
+// clang-format off
 #include <direct.h>
 #include <io.h>
-#include <strsafe.h>
 #include <tchar.h>
 #include <windows.h>
+#include <strsafe.h>
+// clang-format on
 #endif
 
 #ifdef _MSC_VER
