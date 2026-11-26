@@ -39,7 +39,11 @@ run_tools_suite() {
   print_step 'Running ktech/krane tests' 'test.sh'
   printf '\n'
   print_separator
-  bash "${BASE_DIR}/test.sh" "${TEST_ARGS[@]}"
+  if [ "${#TEST_ARGS[@]}" -gt 0 ]; then
+    bash "${BASE_DIR}/test.sh" "${TEST_ARGS[@]}"
+  else
+    bash "${BASE_DIR}/test.sh"
+  fi
 }
 
 while [ "$#" -gt 0 ]; do
