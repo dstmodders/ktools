@@ -354,17 +354,20 @@ run_verify_step() {
   local status=0
 
   print_step_dotted "${label}"
-  err="$(
-    case "${verifier}" in
-      verify_ktech_outputs) verify_ktech_outputs ;;
-      verify_krane_outputs) verify_krane_outputs ;;
-      verify_tex_outputs) verify_tex_outputs ;;
-      *)
-        printf 'unknown verifier: %s\n' "${verifier}" >&2
-        exit 1
-        ;;
-    esac 2>&1
-  )" || status=$?
+  case "${verifier}" in
+    verify_ktech_outputs)
+      err="$(verify_ktech_outputs 2>&1)" || status=$?
+      ;;
+    verify_krane_outputs)
+      err="$(verify_krane_outputs 2>&1)" || status=$?
+      ;;
+    verify_tex_outputs)
+      err="$(verify_tex_outputs 2>&1)" || status=$?
+      ;;
+    *)
+      die "unknown verifier: ${verifier}"
+      ;;
+  esac
 
   if [ "${status}" -eq 0 ]; then
     print_step_success
