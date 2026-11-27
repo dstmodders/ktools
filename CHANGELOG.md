@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix compilation with MinGW on Windows
 - Fix compilation with libc++
 - Fix big-endian and little-endian detection for some architectures
+- Fix resource leaks in ZIP entry reading
 
 ## [4.5.1] - 2021-09-15
 
