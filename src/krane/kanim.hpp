@@ -451,7 +451,7 @@ class KAnimFile : public GenericKAnimFile {
     virtual ~KAnimFile() { clear(); }
 };
 
-class KAnimSelector : public std::unary_function<const KAnim &, bool> {
+class KAnimSelector : public KTools::unary_function_base<const KAnim &, bool> {
   public:
     virtual bool select(const KAnim &A) {
         (void)A;
@@ -480,7 +480,7 @@ class KAnimBankSelector : public KAnimSelector {
     }
 };
 
-class KAnimMapper : public std::unary_function<KAnim &, void> {
+class KAnimMapper : public KTools::unary_function_base<KAnim &, void> {
   public:
     virtual void apply(KAnim &A) { (void)A; }
 

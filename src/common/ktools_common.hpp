@@ -190,8 +190,20 @@ template <typename T, typename U> inline T &cast_assign(T &lval, U rval) {
     return lval;
 }
 
+template <typename Argument, typename Result> struct unary_function_base {
+    typedef Argument argument_type;
+    typedef Result result_type;
+};
+
+template <typename FirstArgument, typename SecondArgument, typename Result>
+struct binary_function_base {
+    typedef FirstArgument first_argument_type;
+    typedef SecondArgument second_argument_type;
+    typedef Result result_type;
+};
+
 template <typename T>
-class ptrLess : public std::binary_function<T *, T *, bool> {
+class ptrLess : public binary_function_base<T *, T *, bool> {
   public:
     bool operator()(const T *a, const T *b) const { return *a < *b; }
 };

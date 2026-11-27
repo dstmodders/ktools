@@ -27,17 +27,17 @@ namespace KTEX {
 class File;
 }
 namespace ImOp {
-typedef std::unary_function<Magick::Image &, void> basic_image_operation_t;
-typedef std::unary_function<MagickCore::Quantum *, void>
+typedef unary_function_base<Magick::Image &, void> basic_image_operation_t;
+typedef unary_function_base<MagickCore::Quantum *, void>
     basic_pixel_operation_t;
-typedef std::unary_function<KTEX::File &, void> basic_ktex_operation_t;
+typedef unary_function_base<KTEX::File &, void> basic_ktex_operation_t;
 
 typedef basic_image_operation_t basic_unary_operation_t;
 
 template <typename argument_type, typename result_type = void>
-class operation_t : public std::unary_function<argument_type, result_type> {
+class operation_t : public unary_function_base<argument_type, result_type> {
   public:
-    typedef std::unary_function<argument_type, result_type> basic_operation_t;
+    typedef unary_function_base<argument_type, result_type> basic_operation_t;
 
     typedef operation_t type;
 
@@ -68,10 +68,10 @@ class operation_t : public std::unary_function<argument_type, result_type> {
 
 template <typename first_argument_type, typename second_argument_type>
 class binary_operation_t
-    : public std::binary_function<first_argument_type, second_argument_type,
+    : public binary_function_base<first_argument_type, second_argument_type,
                                   void> {
   public:
-    typedef std::binary_function<first_argument_type, second_argument_type,
+    typedef binary_function_base<first_argument_type, second_argument_type,
                                  void>
         basic_operation_t;
 
