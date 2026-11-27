@@ -108,6 +108,60 @@ static const handler_pair_t regular_handlers(regular_open_in, regular_open_out);
 ///
 
 #if defined(HAVE_LIBZIP)
+namespace {
+class ZipArchive {
+    struct zip *z;
+
+    ZipArchive(const ZipArchive &);
+    ZipArchive &operator=(const ZipArchive &);
+
+  public:
+    explicit ZipArchive(struct zip *_z) : z(_z) {}
+    ~ZipArchive() {
+        if (z != NULL) {
+            zip_close(z);
+        }
+    }
+
+    struct zip *get() const { return z; }
+};
+
+class ZipFile {
+    struct zip_file *f;
+
+    ZipFile(const ZipFile &);
+    ZipFile &operator=(const ZipFile &);
+
+  public:
+    explicit ZipFile(struct zip_file *_f) : f(_f) {}
+    ~ZipFile() {
+        if (f != NULL) {
+            zip_fclose(f);
+        }
+    }
+
+    struct zip_file *get() const { return f; }
+};
+
+class CharBuffer {
+    char *buf;
+
+    CharBuffer(const CharBuffer &);
+    CharBuffer &operator=(const CharBuffer &);
+
+  public:
+    explicit CharBuffer(char *_buf) : buf(_buf) {}
+    ~CharBuffer() { delete[] buf; }
+
+    char *get() const { return buf; }
+    char *release() {
+        char *tmp = buf;
+        buf = NULL;
+        return tmp;
+    }
+};
+} // namespace
+
 static istream *zip_open_in(vd_t d, p_t p, io_mode mode) {
     (void)mode;
 
@@ -115,53 +169,49 @@ static istream *zip_open_in(vd_t d, p_t p, io_mode mode) {
     const Compat::UnixPath &entrypath = p;
 
     int errorcode;
-    struct zip *z = zip_open(zippath.c_str(), 0, &errorcode);
-    if (z == NULL) {
+    struct zip *z_raw = zip_open(zippath.c_str(), 0, &errorcode);
+    if (z_raw == NULL) {
         char errbuf[1024];
         zip_error_to_str(errbuf, sizeof(errbuf) - 1, errorcode, errno);
         throw KToolsError("Failed to open " + zippath + ": " + errbuf);
     }
+    ZipArchive z(z_raw);
 
-    const zip_int64_t idx = zip_name_locate(z, entrypath.c_str(), 0);
+    const zip_int64_t idx = zip_name_locate(z.get(), entrypath.c_str(), 0);
     if (idx < 0) {
-        zip_close(z);
         throw KToolsError("File " + entrypath + " does not exist in " +
                           zippath);
     }
 
     struct zip_stat entry_info;
 
-    if (zip_stat_index(z, idx, 0, &entry_info) != 0) {
-        string zerr = zip_strerror(z);
-        zip_close(z);
+    if (zip_stat_index(z.get(), idx, 0, &entry_info) != 0) {
+        string zerr = zip_strerror(z.get());
         throw KToolsError("Failed to stat " + entrypath + " in " + zippath +
                           ": " + zerr);
     }
 
-    struct zip_file *entry = zip_fopen_index(z, idx, ZIP_FL_UNCHANGED);
-    if (entry == NULL) {
-        string zerr = zip_strerror(z);
-        zip_close(z);
+    struct zip_file *entry_raw =
+        zip_fopen_index(z.get(), idx, ZIP_FL_UNCHANGED);
+    if (entry_raw == NULL) {
+        string zerr = zip_strerror(z.get());
         throw KToolsError("Failed to open " + entrypath + " in " + zippath +
                           ": " + zerr);
     }
+    ZipFile entry(entry_raw);
 
-    char *buffer = new char[entry_info.size];
+    CharBuffer buffer(new char[entry_info.size]);
 
-    const zip_int64_t read_cnt = zip_fread(entry, buffer, entry_info.size);
+    const zip_int64_t read_cnt =
+        zip_fread(entry.get(), buffer.get(), entry_info.size);
 
     if (read_cnt < 0) {
-        string zerr = zip_file_strerror(entry);
-        zip_fclose(entry);
-        zip_close(z);
+        string zerr = zip_file_strerror(entry.get());
         throw KToolsError("Failed to read contents of " + entrypath + " in " +
                           zippath + ": " + zerr);
     }
 
-    zip_fclose(entry);
-    zip_close(z);
-
-    return new bufferstream(buffer, size_t(read_cnt));
+    return new bufferstream(buffer.release(), size_t(read_cnt));
 }
 #else
 static const VirtualDirectory::in_handler_t zip_open_in = unsupported_handler;
@@ -229,14 +279,13 @@ VirtualDirectory VirtualPath::getVirtualDirectory(Compat::Path &subpath) const {
 #if defined(HAVE_LIBZIP)
 bool VirtualPath::zipEntryExists(vd_t zippath,
                                  const Compat::UnixPath &entrypath) {
-    struct zip *z = zip_open(zippath.c_str(), 0, NULL);
-    if (z == NULL) {
+    struct zip *z_raw = zip_open(zippath.c_str(), 0, NULL);
+    if (z_raw == NULL) {
         return false;
     }
+    ZipArchive z(z_raw);
 
-    zip_int64_t idx = zip_name_locate(z, entrypath.c_str(), 0);
-
-    zip_close(z);
+    zip_int64_t idx = zip_name_locate(z.get(), entrypath.c_str(), 0);
 
     return idx >= 0;
 }
